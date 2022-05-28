@@ -28,5 +28,10 @@ type CustomerForm struct {
 
 type CustomerInfoForm struct {
 	Email    string `json:"email"`
-	Password []byte `json:"password"`
+	Password string `json:"password"`
+}
+
+type LoginForm struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
