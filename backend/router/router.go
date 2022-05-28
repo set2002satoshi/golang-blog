@@ -19,10 +19,13 @@ func SetUpRouter(){
 		},
 	))
 	
-	router.Group("/api")
+	v1 := router.Group("/api")
 	{
-		router.PUT("/", controller.Foge)
-		// router.GET("/", controller.AllFind)
+		v1.POST("/user", controller.CustomerCreate)
+	}
+	v2:= router.Group("/api")
+	{
+		v2.POST("/Certification", controller.Login)
 	}
 
 	router.Run(":8080")
