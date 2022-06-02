@@ -1,13 +1,12 @@
 package router
 
 import (
-	"github.com/gin-gonic/gin"
 	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 	"github.com/set2002satoshi/golang-blog/controller"
 )
 
-
-func SetUpRouter(){
+func SetUpRouter() {
 	router := gin.Default()
 
 	router.Use(cors.New(
@@ -18,14 +17,16 @@ func SetUpRouter(){
 			AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
 		},
 	))
-	
-	v1 := router.Group("/api")
+
+	v1 := router.Group("/api/user")
 	{
 		v1.POST("/user", controller.CustomerCreate)
+		v1.POST("/Certification", controller.Login)
 	}
-	v2:= router.Group("/api")
+	v2 := router.Group("/api/app")
 	{
-		v2.POST("/Certification", controller.Login)
+		v2.GET("/all", controller.BlogAll)
+		v2.POST("/push", controller.BlogCreate)
 	}
 
 	router.Run(":8080")
