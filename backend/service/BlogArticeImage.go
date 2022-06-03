@@ -28,7 +28,7 @@ import (
 )
 
 
-func ArticleImageS3(c *gin.Context, username string, blogID uint) (string, error) {
+func ArticleImageUploadS3(c *gin.Context, username string, blogID uint) (string, error) {
 
 	err := godotenv.Load("./config.env")
 	if err != nil {
@@ -96,65 +96,10 @@ func ArticleImageS3(c *gin.Context, username string, blogID uint) (string, error
 	return objectKey, nil
 }
 
-
-// func BlogCreate(c *gin.Context) {
-// 	DbEngine := db.ConnectDB()
-// 	var BlogForm model.BlogForm
-// 	err := c.Bind(&BlogForm)
-// 	if err != nil {
-// 		response := map[string]string{
-// 			"message": "not Bind",
-// 		}
-// 		c.JSON(404, response)
-// 		return
-// 	}
+func ArticleImageDownload(c *gin.Context, URL string) {
 	
-// 	blog := model.Blog{
-
-// 		Title: BlogForm.Title,
-// 		Subtitle: BlogForm.Subtitle,
-// 		Content: BlogForm.Content,
-// 	}
+}
 
 
-// 	DbEngine.Transaction(c *gin.Context)  {
-// 		DbEngine := db.ConnectDB()
-// 		username := "お名前です"
-// 		result := tx.Select("Title", "Subtitle", "Content").Create(&blog)
-// 		if result.Error != nil {
-// 			response := map[string]string{
-// 				"message": "create text err",
-// 				}
-// 				c.JSON(200, response)
-// 		}
-// 		fmt.Println(username, blog.ID)
-// 		ImgKey, err := service.ArticleImageS3(c, username, blog.ID)
-// 		if err != nil {
-// 			log.Fatal("upload err")
-// 			response := map[string]string{
-// 				"message": "create img err",
-// 			}
-// 			c.JSON(200, response)
-// 		}	
-// 		result = DbEngine.Model(&blog).Update("BlogImage", ImgKey)
-// 		if result.Error != nil {
-// 			response := map[string]string{
-// 				"message": "add img err",
-// 			}
-// 			c.JSON(200, response)
-// 		}
-// 		log.Fatal("success post blog")
-// 		var BlogList model.Blog
-// 		DbEngine.Find(&BlogList)
-// 		response := map[string]interface{}{
-// 		"message": "success",
-// 		"blog": BlogList,
-// 		}
-// 		c.JSON(200, response)
-		
-// 	})
-	
-	
-// }
 
 
