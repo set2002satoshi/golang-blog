@@ -49,7 +49,7 @@ func ArticleImageUploadS3(c *gin.Context, username string, blogID uint) (string,
 	}
 	filetype := filename[len(filename)-1]
 	FileFirstName := filename[len(filename)-2]
-	if string(filetype) != "jpg" {
+	if string(filetype) != "jpeg" {
 		log.Fatal("無効なファイル")
 		return "", err
 	}
@@ -69,7 +69,7 @@ func ArticleImageUploadS3(c *gin.Context, username string, blogID uint) (string,
 		return "", err
 	}
 
-	defer os.Remove(fileName)
+	defer os.Remove(header.Filename)
 
 	
 	creds := credentials.NewStaticCredentials(os.Getenv("aws_access_key_id"), os.Getenv("aws_secret_access_key"), "")
