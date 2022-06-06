@@ -23,6 +23,22 @@ func BlogAll(c *gin.Context) {
 }
 
 
+func BlogOne(c *gin.Context) {
+	DbEngine := db.ConnectDB()
+	num := c.Query("id")
+	b := []model.Blog{}
+	result := DbEngine.Where("id = ?", num).First(&b)
+	if result.Error != nil {
+		response := map[string]interface{}{
+			"message": "error",
+		}
+		c.JSON(404, response)
+		return
+	}
+	c.JSON(200, &b)	
+}
+
+
 func BlogCreate(c *gin.Context) {
 	username := "user"
 	DbEngine := db.ConnectDB()

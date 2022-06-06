@@ -8,7 +8,6 @@ import (
 
 func SetUpRouter() {
 	router := gin.Default()
-
 	router.Use(cors.New(
 		cors.Config{
 			AllowOrigins:     []string{"http://localhost:3000"},
@@ -17,7 +16,6 @@ func SetUpRouter() {
 			AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
 		},
 	))
-
 	v1 := router.Group("/api/user")
 	{
 		v1.POST("/user", controller.CustomerCreate)
@@ -25,9 +23,9 @@ func SetUpRouter() {
 	}
 	v2 := router.Group("/api/app")
 	{
-		v2.GET("/all", controller.BlogAll)
-		v2.POST("/push", controller.BlogCreate)
+		v2.GET("/blog_all", controller.BlogAll)
+		v2.GET("/blog", controller.BlogOne)
+		v2.POST("/blog_push", controller.BlogCreate)
 	}
-
 	router.Run(":8080")
 }
