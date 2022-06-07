@@ -32,7 +32,7 @@ func ArticleAllDeleteImageS3(c *gin.Context) (error) {
 	err := godotenv.Load("./config.env")
 	if err != nil {
 		log.Fatal(err)
-		return fmt.Errorf("not read confg.env")
+		return fmt.Errorf("500 not read confg.env")
 	}
 	creds := credentials.NewStaticCredentials(os.Getenv("AWS_ACCESS_KEY_ID"), os.Getenv("AWS_SECRET_ACCESS_KEY"), "")
 	sess, err := session.NewSession(&aws.Config{
@@ -50,7 +50,7 @@ func ArticleAllDeleteImageS3(c *gin.Context) (error) {
 	err = s3manager.NewBatchDeleteWithClient(svc).Delete(aws.BackgroundContext(), iter)
 	if err != nil {
 		log.Fatal(err)
-		return fmt.Errorf("bucket err")
+		return fmt.Errorf("500 bucket err")
 	}
 	return nil
 }

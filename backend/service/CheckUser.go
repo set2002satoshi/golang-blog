@@ -12,7 +12,7 @@ import (
 func ClickUser(c *gin.Context) (userID string, err error) {
 	err = godotenv.Load("./config.env")
 	if err != nil {
-		fmt.Println("not read config.env")
+		fmt.Println("400 not read config.env")
 		return "", err
 	}
 	 
@@ -29,7 +29,7 @@ func ClickUser(c *gin.Context) (userID string, err error) {
 	})
 
 	if err != nil {
-		fmt.Errorf("not user")
+		fmt.Errorf("401")
 		return "", err
 	}
 
