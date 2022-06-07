@@ -27,7 +27,10 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 )
 
-func ArticleImageS3(c *gin.Context, username string, blogID uint) (string, error) {
+
+
+func ArticleImageUploadS3(c *gin.Context, username string, blogID uint) (string, error) {
+
 
 	err := godotenv.Load("./config.env")
 	if err != nil {
@@ -69,6 +72,7 @@ func ArticleImageS3(c *gin.Context, username string, blogID uint) (string, error
 }
 
 
+
 func ReName(fileName, username string, blogID uint) (string, error) {
 	FileNameArray := strings.Split(fileName, ".")
 	if len(FileNameArray) >= 3 {
@@ -76,6 +80,7 @@ func ReName(fileName, username string, blogID uint) (string, error) {
 	}
 	Filetype := FileNameArray[len(FileNameArray)-1]
 	FileFirstName := FileNameArray[len(FileNameArray)-2]
+
 
 	FileName := fmt.Sprintf("%s%d%s.%s", FileFirstName, blogID, username, Filetype)
 	return FileName, nil
