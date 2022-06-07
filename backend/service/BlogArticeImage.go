@@ -14,7 +14,7 @@ import (
 
 	// アップロードandダウンロード
 	"fmt"
-	"io"
+
 	"log"
 	"os"
 	"strings"
@@ -28,52 +28,25 @@ import (
 )
 
 
+
 func ArticleImageUploadS3(c *gin.Context, username string, blogID uint) (string, error) {
+
 
 	err := godotenv.Load("./config.env")
 	if err != nil {
 		fmt.Println("not read confg.env")
 		return "", err
 	}
-
 	
 	file, header, err := c.Request.FormFile("file")
 	if err != nil {
 		log.Fatal("ファイルのうけとりができませんでした")
 		return "", err
 	}
-	filename := strings.Split(header.Filename, ".")
-	if len(filename) >= 3 {
-		log.Fatal("不適切なファイル")
-		return "", err
-	}
-	filetype := filename[len(filename)-1]
-	FileFirstName := filename[len(filename)-2]
-	if string(filetype) != "jpeg" {
-		log.Fatal("無効なファイル")
-		return "", err
-	}
-
-	// fileName := FileFirstName+ "/" + s + username +  "." + filetype
-	fileName := fmt.Sprintf("%s/%d%s.%s", FileFirstName, blogID, username, filetype)
-
-	saveImage, err := os.Create(header.Filename)
-	if err != nil {
-		log.Fatal("ファイル作成に失敗")
-		return "", err
-	}
-	defer saveImage.Close()
-	_, err = io.Copy(saveImage, file)
-	if err != nil {
-		log.Fatal("ファイルコピーができませんでした。")
-		return "", err
-	}
-
-	defer os.Remove(header.Filename)
-
 	
-	creds := credentials.NewStaticCredentials(os.Getenv("aws_access_key_id"), os.Getenv("aws_secret_access_key"), "")
+	fileName, err := ReName(header.Filename, username, blogID)
 
+	creds := credentials.NewStaticCredentials(os.Getenv("aws_access_key_id"), os.Getenv("aws_secret_access_key"), "")
 	sess, err := session.NewSession(&aws.Config{
 		Credentials: creds,
 		Region: aws.String("ap-northeast-1")},
@@ -83,10 +56,12 @@ func ArticleImageUploadS3(c *gin.Context, username string, blogID uint) (string,
 	Bucket := "blog0601"
 	objectKey := fileName
 
+
 	_, err = uploader.Upload(&s3manager.UploadInput{
 		Bucket: aws.String(Bucket),
 		Key: aws.String(objectKey),
-		Body: saveImage,
+		Body: file,
+		ContentType:   aws.String("image/jpeg"),
 	})
 	if err != nil{
 		log.Fatal("uploadに失敗しました。")
@@ -96,10 +71,18 @@ func ArticleImageUploadS3(c *gin.Context, username string, blogID uint) (string,
 	return objectKey, nil
 }
 
-func ArticleImageDownload(c *gin.Context, URL string) {
-	
+
+
+func ReName(fileName, username string, blogID uint) (string, error) {
+	FileNameArray := strings.Split(fileName, ".")
+	if len(FileNameArray) >= 3 {
+		return "", fmt.Errorf("不適切なファイル")
+	}
+	Filetype := FileNameArray[len(FileNameArray)-1]
+	FileFirstName := FileNameArray[len(FileNameArray)-2]
+
+
+	FileName := fmt.Sprintf("%s%d%s.%s", FileFirstName, blogID, username, Filetype)
+	return FileName, nil
+
 }
-
-
-
-
