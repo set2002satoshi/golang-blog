@@ -23,9 +23,18 @@ func SetUpRouter() {
 	}
 	v2 := router.Group("/api/app")
 	{
-		v2.GET("/blog_all", controller.BlogAll)
 		v2.GET("/blog", controller.BlogOne)
+		v2.GET("/blog_all", controller.BlogAll)
+		v2.DELETE("/blog", controller.BlogAllDelete)
+		v2.DELETE("/blog_all", controller.BlogAllDelete)
 		v2.POST("/blog_push", controller.BlogCreate)
+	}
+	v3 := router.Group("api/test")
+	{
+		v3.GET("S3test", controller.S3testhandler)
 	}
 	router.Run(":8080")
 }
+
+
+
