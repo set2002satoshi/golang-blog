@@ -25,7 +25,7 @@ func SetUpRouter() {
 	{
 		v2.GET("/blog", controller.BlogOne)
 		v2.GET("/blog_all", controller.BlogAll)
-		v2.DELETE("/blog", controller.BlogAllDelete)
+		v2.DELETE("/blog", controller.BlogOneDelete)
 		v2.DELETE("/blog_all", controller.BlogAllDelete)
 		v2.POST("/blog_push", controller.BlogCreate)
 	}

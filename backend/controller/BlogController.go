@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"log"
 	// "net//http"
 	"github.com/gin-gonic/gin"
 	// "gorm.io/gorm"
@@ -19,6 +20,7 @@ func BlogAll(c *gin.Context) {
 		"user": b,
 	})
 }
+
 func BlogOne(c *gin.Context) {
 	DbEngine := db.ConnectDB()
 	num := c.Query("id")
@@ -28,63 +30,22 @@ func BlogOne(c *gin.Context) {
 		response := map[string]interface{}{
 			"message": "error",
 		}
-		c.JSON(404, response)
+		c.JSON(400, response)
 		return
 	}
 	c.JSON(200, &b)	
 }
 
-
-func BlogCreate(c *gin.Context) {
-	username := "user"
+func BlogOneDelete(c *gin.Context) {
 	DbEngine := db.ConnectDB()
-	var BlogForm model.BlogForm
-	err := c.Bind(&BlogForm)
-	if err != nil {
-		response := map[string]string{
-			"message": "not Bind",
-		}
-		c.JSON(404, response)
-		return
-	}
-	blog := model.Blog{
-		Title: BlogForm.Title,
-		Subtitle: BlogForm.Subtitle,
-		Content: BlogForm.Content,
-	}
-	result := DbEngine.Create(&blog)
+	b := []model.Blog{}
+	num := c.Query("id")
+	result := DbEngine.Where("id = ?", num).Delete(&b)
 	if result.Error != nil {
-		response := map[string]string{
-			"message": "not create text",
-		}
-		c.JSON(404, response)
-		return
+		log.Fatal("削除に失敗")
+		c.JSON(400, gin.H{"err": result.Error})
 	}
-	fmt.Println(blog.ID)
-
-	ImgID, err := service.ArticleUploadImageS3(c, username, blog.ID)
-
-	if err != nil {
-		response := map[string]string{
-			"message": "not create image",
-		}
-		c.JSON(404, response)
-		return
-	}
-	result = DbEngine.Model(&blog).Select("blog_image").Updates(map[string]interface{}{"blog_image": ImgID,})
-	if result.Error != nil {
-		response := map[string]string{
-			"message": "not add image",
-		}
-		c.JSON(404, response)
-		return
-	}
-	response := map[string]interface{}{
-		"message": "ok",
-		"blog": blog,
-	}
-
-	c.JSON(200, response)	
+	c.JSON(200, gin.H{"message": "ok"})
 }
 
 func BlogAllDelete(c *gin.Context){
@@ -97,19 +58,72 @@ func BlogAllDelete(c *gin.Context){
 		response := map[string]interface{}{
 			"message": "db error",
 		}
-		c.JSON(404, response)
+		c.JSON(400, response)
 		return
 	}
 	err := service.ArticleAllDeleteImageS3(c)
 	if err != nil {
 		response := map[string]interface{}{
-			"message": "s3 error",
+			"message": "500s3 error",
 			"error": err,
 		}
-		c.JSON(404, response)
+		c.JSON(500, response)
 		return
 	}
 	c.JSON(200, gin.H{"status": "OK", "data": BlogTable})
+}
+
+
+func BlogCreate(c *gin.Context) {
+	username := "user"
+	DbEngine := db.ConnectDB()
+	var BlogForm model.BlogForm
+	err := c.Bind(&BlogForm)
+	if err != nil {
+		response := map[string]string{
+			"message": "not Bind",
+		}
+		c.JSON(400, response)
+		return
+	}
+	blog := model.Blog{
+		Title: BlogForm.Title,
+		Subtitle: BlogForm.Subtitle,
+		Content: BlogForm.Content,
+	}
+	result := DbEngine.Create(&blog)
+	if result.Error != nil {
+		response := map[string]string{
+			"message": "not create text",
+		}
+		c.JSON(400, response)
+		return
+	}
+	fmt.Println(blog.ID)
+
+	ImgID, err := service.ArticleUploadImageS3(c, username, blog.ID)
+
+	if err != nil {
+		response := map[string]string{
+			"message": "not create image",
+		}
+		c.JSON(500, response)
+		return
+	}
+	result = DbEngine.Model(&blog).Select("blog_image").Updates(map[string]interface{}{"blog_image": ImgID,})
+	if result.Error != nil {
+		response := map[string]string{
+			"message": "not add image",
+		}
+		c.JSON(500, response)
+		return
+	}
+	response := map[string]interface{}{
+		"message": "ok",
+		"blog": blog,
+	}
+
+	c.JSON(200, response)	
 }
 
 
@@ -120,7 +134,7 @@ func S3testhandler(c *gin.Context) {
 			"message": "s3 error",
 			"error": err,
 		}
-		c.JSON(404, response)
+		c.JSON(500, response)
 		return
 	}
 	c.JSON(200, gin.H{"status": "OK"})
