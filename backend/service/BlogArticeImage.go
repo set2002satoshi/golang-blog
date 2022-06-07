@@ -28,6 +28,7 @@ import (
 )
 
 
+
 func ArticleAllDeleteImageS3(c *gin.Context) (error) {
 	err := godotenv.Load("./config.env")
 	if err != nil {
@@ -65,6 +66,7 @@ func ArticleAllDeleteImageS3(c *gin.Context) (error) {
 
 
 func ArticleUploadImageS3(c *gin.Context, username string, blogID uint) (string, error) {
+
 
 	err := godotenv.Load("./config.env")
 	if err != nil {
@@ -105,6 +107,7 @@ func ArticleUploadImageS3(c *gin.Context, username string, blogID uint) (string,
 }
 
 
+
 func ReName(fileName, username string, blogID uint) (string, error) {
 	FileNameArray := strings.Split(fileName, ".")
 	if len(FileNameArray) >= 3 {
@@ -112,6 +115,7 @@ func ReName(fileName, username string, blogID uint) (string, error) {
 	}
 	Filetype := FileNameArray[len(FileNameArray)-1]
 	FileFirstName := FileNameArray[len(FileNameArray)-2]
+
 
 	FileName := fmt.Sprintf("%s%d%s.%s", FileFirstName, blogID, username, Filetype)
 	return FileName, nil
