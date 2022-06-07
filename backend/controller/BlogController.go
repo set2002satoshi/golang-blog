@@ -2,9 +2,7 @@ package controller
 
 import (
 	"fmt"
-
 	// "net//http"
-
 	"github.com/gin-gonic/gin"
 	// "gorm.io/gorm"
 
@@ -21,8 +19,6 @@ func BlogAll(c *gin.Context) {
 		"user": b,
 	})
 }
-
-
 func BlogOne(c *gin.Context) {
 	DbEngine := db.ConnectDB()
 	num := c.Query("id")
@@ -65,7 +61,9 @@ func BlogCreate(c *gin.Context) {
 		return
 	}
 	fmt.Println(blog.ID)
-	ImgID, err := service.ArticleImageUploadS3(c, username, blog.ID)
+
+	ImgID, err := service.ArticleUploadImageS3(c, username, blog.ID)
+
 	if err != nil {
 		response := map[string]string{
 			"message": "not create image",
@@ -85,7 +83,46 @@ func BlogCreate(c *gin.Context) {
 		"message": "ok",
 		"blog": blog,
 	}
-	c.JSON(200, response)
-	
+
+	c.JSON(200, response)	
+}
+
+func BlogAllDelete(c *gin.Context){
+	DbEngine := db.ConnectDB()
+	BlogTable :=  []model.Blog{}
+	DbEngine.Find(&BlogTable)
+
+	result := DbEngine.Delete(&BlogTable)
+	if result.Error != nil {
+		response := map[string]interface{}{
+			"message": "db error",
+		}
+		c.JSON(404, response)
+		return
+	}
+	err := service.ArticleAllDeleteImageS3(c)
+	if err != nil {
+		response := map[string]interface{}{
+			"message": "s3 error",
+			"error": err,
+		}
+		c.JSON(404, response)
+		return
+	}
+	c.JSON(200, gin.H{"status": "OK", "data": BlogTable})
+}
+
+
+func S3testhandler(c *gin.Context) {
+	err := service.ArticleAllDeleteImageS3(c)
+	if err != nil {
+		response := map[string]interface{}{
+			"message": "s3 error",
+			"error": err,
+		}
+		c.JSON(404, response)
+		return
+	}
+	c.JSON(200, gin.H{"status": "OK"})
 }
 

@@ -23,13 +23,49 @@ import (
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/joho/godotenv"
-	// "github.com/aws/aws-sdk-go/service/s3"
+	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 )
 
 
 
-func ArticleImageUploadS3(c *gin.Context, username string, blogID uint) (string, error) {
+func ArticleAllDeleteImageS3(c *gin.Context) (error) {
+	err := godotenv.Load("./config.env")
+	if err != nil {
+		log.Fatal(err)
+		return fmt.Errorf("not read confg.env")
+	}
+	creds := credentials.NewStaticCredentials(os.Getenv("AWS_ACCESS_KEY_ID"), os.Getenv("AWS_SECRET_ACCESS_KEY"), "")
+	sess, err := session.NewSession(&aws.Config{
+		Credentials: creds,
+		Region: aws.String("ap-northeast-1"),
+	})
+
+	svc := s3.New(sess)
+	bucket := os.Getenv("AWS_BUCKET")
+
+	iter := s3manager.NewDeleteListIterator(svc, &s3.ListObjectsInput{
+		Bucket: aws.String(bucket),
+	})
+	
+	err = s3manager.NewBatchDeleteWithClient(svc).Delete(aws.BackgroundContext(), iter)
+	if err != nil {
+		log.Fatal(err)
+		return fmt.Errorf("bucket err")
+	}
+	return nil
+}
+
+// func ArticleDeleteImageS3(c *gin.Context, objectKey string) (error) {
+// 	err := godotenv.Load("./config.env")
+// 	if err != nil {
+// 		return fmt.Errorf("not read confg.env")
+// 	}
+	
+// }
+
+
+func ArticleUploadImageS3(c *gin.Context, username string, blogID uint) (string, error) {
 
 
 	err := godotenv.Load("./config.env")
@@ -40,20 +76,19 @@ func ArticleImageUploadS3(c *gin.Context, username string, blogID uint) (string,
 	
 	file, header, err := c.Request.FormFile("file")
 	if err != nil {
-		log.Fatal("ファイルのうけとりができませんでした")
-		return "", err
+		return "", fmt.Errorf("ファイルのうけとりができませんでした")
 	}
 	
 	fileName, err := ReName(header.Filename, username, blogID)
 
-	creds := credentials.NewStaticCredentials(os.Getenv("aws_access_key_id"), os.Getenv("aws_secret_access_key"), "")
+	creds := credentials.NewStaticCredentials(os.Getenv("AWS_ACCESS_KEY_ID"), os.Getenv("AWS_SECRET_ACCESS_KEY"), "")
 	sess, err := session.NewSession(&aws.Config{
 		Credentials: creds,
 		Region: aws.String("ap-northeast-1")},
 	)
 	uploader := s3manager.NewUploader(sess)
 
-	Bucket := "blog0601"
+	Bucket := os.Getenv("AWS_BUCKET")
 	objectKey := fileName
 
 
