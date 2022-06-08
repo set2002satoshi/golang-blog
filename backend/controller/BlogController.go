@@ -100,7 +100,9 @@ func BlogCreate(c *gin.Context) {
 		return
 	}
 	fmt.Println(blog.ID)
+
 	ImgID, err := service.BlogUploadImageS3(c, username, blog.ID)
+
 	if err != nil {
 		response := map[string]string{
 			"message": "not create image",
@@ -108,7 +110,7 @@ func BlogCreate(c *gin.Context) {
 		c.JSON(500, response)
 		return
 	}
-	result = DbEngine.Model(&blog).Update("blog_image", ImgID)
+	result = DbEngine.Model(&blog).Select("blog_image").Updates(map[string]interface{}{"blog_image": ImgID,})
 	if result.Error != nil {
 		response := map[string]string{
 			"message": "not add image",
@@ -120,19 +122,7 @@ func BlogCreate(c *gin.Context) {
 		"message": "ok",
 		"blog": blog,
 	}
+
 	c.JSON(200, response)	
 }
 
-
-// func S3testhandler(c *gin.Context) {
-// 	err := service.ArticleAllDeleteImageS3(c)
-// 	if err != nil {
-// 		response := map[string]interface{}{
-// 			"message": "s3 error",
-// 			"error": err,
-// 		}
-// 		c.JSON(500, response)
-// 		return
-// 	}
-// 	c.JSON(200, gin.H{"status": "OK"})
-// }
