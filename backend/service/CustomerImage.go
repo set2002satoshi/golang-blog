@@ -28,7 +28,8 @@ import (
 )
 
 
-func ArticleAllDeleteImageS3(c *gin.Context) (error) {
+
+func CustomerAllDeleteImageS3(c *gin.Context) (error) {
 	err := godotenv.Load("./config.env")
 	if err != nil {
 		log.Fatal(err)
@@ -55,16 +56,8 @@ func ArticleAllDeleteImageS3(c *gin.Context) (error) {
 	return nil
 }
 
-// func ArticleDeleteImageS3(c *gin.Context, objectKey string) (error) {
-// 	err := godotenv.Load("./config.env")
-// 	if err != nil {
-// 		return fmt.Errorf("not read confg.env")
-// 	}
-	
-// }
 
-
-func ArticleUploadImageS3(c *gin.Context, username string, blogID uint) (string, error) {
+func CustomerUploadImageS3(c *gin.Context, username string, CustomerID uint) (string, error) {
 
 	err := godotenv.Load("./config.env")
 	if err != nil {
@@ -77,7 +70,7 @@ func ArticleUploadImageS3(c *gin.Context, username string, blogID uint) (string,
 		return "", fmt.Errorf("ファイルのうけとりができませんでした")
 	}
 	
-	fileName, err := ReName(header.Filename, username, blogID)
+	fileName, err := ReNameProfile(header.Filename, username, CustomerID)
 
 	creds := credentials.NewStaticCredentials(os.Getenv("AWS_ACCESS_KEY_ID"), os.Getenv("AWS_SECRET_ACCESS_KEY"), "")
 	sess, err := session.NewSession(&aws.Config{
@@ -105,15 +98,13 @@ func ArticleUploadImageS3(c *gin.Context, username string, blogID uint) (string,
 }
 
 
-func ReName(fileName, username string, blogID uint) (string, error) {
+func ReNameProfile(fileName, username string, CustomerID uint) (string, error) {
 	FileNameArray := strings.Split(fileName, ".")
 	if len(FileNameArray) >= 3 {
 		return "", fmt.Errorf("不適切なファイル")
 	}
 	Filetype := FileNameArray[len(FileNameArray)-1]
 	FileFirstName := FileNameArray[len(FileNameArray)-2]
-
-	FileName := fmt.Sprintf("%s%d%s.%s", FileFirstName, blogID, username, Filetype)
+	FileName := fmt.Sprintf("%s%s%d%s.%s", "Profile", FileFirstName, CustomerID, username, Filetype)
 	return FileName, nil
-
 }
