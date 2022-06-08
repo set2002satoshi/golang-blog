@@ -13,7 +13,7 @@ func DBInit() {
 	DB.AutoMigrate(&model.CustomerInfo{})
 	DB.AutoMigrate(&model.Customer{})
 	DB.AutoMigrate(&model.Blog{})
-	DB.AutoMigrate(&model.Tag{})
+	DB.AutoMigrate(&model.Category{})
 }
 
 func ConnectDB() *gorm.DB {

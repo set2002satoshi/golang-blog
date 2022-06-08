@@ -137,7 +137,5 @@ func BlogCreate(c *gin.Context) {
 		"message": "ok",
 		"blog": blog,
 	}
-
-	c.JSON(200, response)	
-
+	c.JSON(200, response)
 }
