@@ -15,7 +15,7 @@ type CustomerInfo struct {
 type Customer struct {
 	gorm.Model
 	// CustomerInfoID uint
-	Name           string `json:"name" gorm:"not nil"`
+	Name           string `json:"name" gorm:"not null"`
 	Thumbnail      string `json:"thumbnail" gorm:"not null;size:256"`
 	Message        string `json:"message" gorm:"not null;size256"`
 }

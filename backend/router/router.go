@@ -29,12 +29,19 @@ func SetUpRouter() {
 		v2.DELETE("/blog", controller.BlogOneDelete)
 		v2.DELETE("/blog_all", controller.BlogAllDelete)
 	}
-	v3 := router.Group("api/Customer")
+	v3 := router.Group("/api")
 	{
-		v3.GET("/customer", controller.CustomerOne)
-		v3.GET("/customer_all", controller.CustomerAll)
-		v3.POST("/customer_push", controller.CustomerCreate)
-		v3.DELETE("/customer", controller.CustomerOneDelete)
+		v3.GET("/Category", controller.CategoryAll)
+		v3.PUT("/Category_add", controller.AddCategory)
+		
+
+	}
+	V4 := router.Group("api/Customer")
+	{
+		V4.GET("/customer", controller.CustomerOne)
+		V4.GET("/customer_all", controller.CustomerAll)
+		V4.POST("/customer_push", controller.CustomerCreate)
+		V4.DELETE("/customer", controller.CustomerOneDelete)
 		// v3.DELETE("/customer_all", controller.Customer)
 
 		
