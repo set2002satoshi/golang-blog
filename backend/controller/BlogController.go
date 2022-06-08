@@ -61,7 +61,9 @@ func BlogAllDelete(c *gin.Context){
 		c.JSON(400, response)
 		return
 	}
-	err := service.ArticleAllDeleteImageS3(c)
+
+	err := service.BlogAllDeleteImageS3(c)
+
 	if err != nil {
 		response := map[string]interface{}{
 			"message": "500s3 error",
@@ -101,7 +103,9 @@ func BlogCreate(c *gin.Context) {
 	}
 	fmt.Println(blog.ID)
 
-	ImgID, err := service.ArticleUploadImageS3(c, username, blog.ID)
+
+	ImgID, err := service.BlogUploadImageS3(c, username, blog.ID)
+
 
 	if err != nil {
 		response := map[string]string{
@@ -124,19 +128,5 @@ func BlogCreate(c *gin.Context) {
 	}
 
 	c.JSON(200, response)	
-}
 
-
-func S3testhandler(c *gin.Context) {
-	err := service.ArticleAllDeleteImageS3(c)
-	if err != nil {
-		response := map[string]interface{}{
-			"message": "s3 error",
-			"error": err,
-		}
-		c.JSON(500, response)
-		return
-	}
-	c.JSON(200, gin.H{"status": "OK"})
-}
 

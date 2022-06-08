@@ -14,9 +14,10 @@ import (
 
 	"github.com/set2002satoshi/golang-blog/db"
 	"github.com/set2002satoshi/golang-blog/model"
+	// "github.com/set2002satoshi/golang-blog/service"
 )
 
-func CustomerCreate(c *gin.Context) {
+func CustomerInfoCreate(c *gin.Context) {
 	var CustomerForm model.CustomerInfoForm
 	DbEngine := db.ConnectDB()
 	err := c.BindJSON(&CustomerForm)

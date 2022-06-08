@@ -9,12 +9,12 @@ type CustomerInfo struct {
 	Email    string `json:"email" gorm:"unique;not null"`
 	Password []byte `json:"password" gorm:"not null"`
 	// Blog     []Blog
-	Customer Customer
+	// Customer Customer
 }
 
 type Customer struct {
 	gorm.Model
-	CustomerInfoID uint
+	// CustomerInfoID uint
 	Name           string `json:"name" gorm:"not nil"`
 	Thumbnail      string `json:"thumbnail" gorm:"not null;size:256"`
 	Message        string `json:"message" gorm:"not null;size256"`
@@ -26,7 +26,7 @@ type Customer struct {
 
 type CustomerForm struct {
 	Name      string `json:"name"`
-	Thumbnail string `json:"thumbnail" gorm:"not null;size:256"`
+	// Thumbnail string `json:"thumbnail" gorm:"not null;size:256"`
 	Message   string `json:"message" gorm:"not null;size256"`
 }
 
