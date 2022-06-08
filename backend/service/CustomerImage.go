@@ -56,6 +56,29 @@ func CustomerAllDeleteImageS3(c *gin.Context) (error) {
 	return nil
 }
 
+func CustomerDeleteImageS3(c *gin.Context, objectKey string) (error) {
+	err := godotenv.Load("./config.env")
+	if err != nil {
+		return fmt.Errorf("not read confg.env")
+	}
+	creds := credentials.NewStaticCredentials(os.Getenv("AWS_ACCESS_KEY_ID"), os.Getenv("AWS_SECRET_ACCESS_KEY"), "")
+	sess, err := session.NewSession(&aws.Config{
+		Credentials: creds,
+		Region: aws.String("ap-northeast-1")},
+	)
+	bucket := os.Getenv("AWS_BUCKET")
+	svc := s3.New(sess)
+	_, err = svc.DeleteObject(&s3.DeleteObjectInput{Bucket: aws.String(bucket), Key: aws.String(objectKey)})
+	if err != nil {
+		return fmt.Errorf("not delete")
+	}
+	err = svc.WaitUntilObjectNotExists(&s3.HeadObjectInput{
+		Bucket: aws.String(bucket),
+		Key:    aws.String(objectKey),
+	})
+	return nil
+}
+
 
 func CustomerUploadImageS3(c *gin.Context, username string, CustomerID uint) (string, error) {
 

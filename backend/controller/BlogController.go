@@ -3,6 +3,7 @@ package controller
 import (
 	"fmt"
 	"log"
+
 	// "net//http"
 	"github.com/gin-gonic/gin"
 	// "gorm.io/gorm"
@@ -38,9 +39,19 @@ func BlogOne(c *gin.Context) {
 
 func BlogOneDelete(c *gin.Context) {
 	DbEngine := db.ConnectDB()
-	b := []model.Blog{}
+	var Blog model.Blog
 	num := c.Query("id")
-	result := DbEngine.Where("id = ?", num).Delete(&b)
+	DbEngine.Where("id = ?", num).First(&Blog)
+
+	err := service.ArticleDeleteImageS3(c, string(Blog.BlogImage))
+	if err != nil {
+		response := map[string]interface{}{
+			"message": "s3 error",
+		}
+		c.JSON(400, response)
+		return
+	}
+	result := DbEngine.Delete(&Blog)
 	if result.Error != nil {
 		log.Fatal("削除に失敗")
 		c.JSON(400, gin.H{"err": result.Error})
@@ -129,4 +140,4 @@ func BlogCreate(c *gin.Context) {
 
 	c.JSON(200, response)	
 
-
+}
