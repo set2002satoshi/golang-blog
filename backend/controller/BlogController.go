@@ -16,7 +16,7 @@ import (
 func BlogAll(c *gin.Context) {
 	DbEngine := db.ConnectDB()
 	b := []model.Blog{}
-	DbEngine.Find(&b)
+	DbEngine.Preload("Tags").Find(&b)
 	c.JSON(200, gin.H{
 		"user": b,
 	})
@@ -88,10 +88,18 @@ func BlogAllDelete(c *gin.Context){
 
 
 func BlogCreate(c *gin.Context) {
-	username := "user"
+	// username := "user"
 	DbEngine := db.ConnectDB()
 	var BlogForm model.BlogForm
 	err := c.Bind(&BlogForm)
+	var tag model.Tag
+	if result := DbEngine.Where("id = ?", BlogForm.Tag).First(&tag); result.Error != nil {
+		response := map[string]string{
+			"message": "not category",
+		}
+		c.JSON(400, response)
+		return
+	}
 	if err != nil {
 		response := map[string]string{
 			"message": "not Bind",
@@ -103,6 +111,7 @@ func BlogCreate(c *gin.Context) {
 		Title: BlogForm.Title,
 		Subtitle: BlogForm.Subtitle,
 		Content: BlogForm.Content,
+		Tags: []model.Tag{tag},
 	}
 	result := DbEngine.Create(&blog)
 	if result.Error != nil {
@@ -112,27 +121,38 @@ func BlogCreate(c *gin.Context) {
 		c.JSON(400, response)
 		return
 	}
-	fmt.Println(blog.ID)
+	fmt.Println(blog)
+	// ImgID, err := service.BlogUploadImageS3(c, username, blog.ID)
+	// if err != nil {
+	// 	response := map[string]string{
+	// 		"message": "not create image",
+	// 	}
+	// 	c.JSON(500, response)
+	// 	return
+	// }
+	// result = DbEngine.Model(&blog).Select("blog_image").Updates(map[string]interface{}{"blog_image": ImgID,})
+	// if result.Error != nil {
+	// 	response := map[string]string{
+	// 		"message": "not add image",
+	// 	}
+	// 	c.JSON(500, response)
+	// 	return
+	// }
+	
 
-
-	ImgID, err := service.BlogUploadImageS3(c, username, blog.ID)
-
-
-	if err != nil {
-		response := map[string]string{
-			"message": "not create image",
-		}
-		c.JSON(500, response)
-		return
-	}
-	result = DbEngine.Model(&blog).Select("blog_image").Updates(map[string]interface{}{"blog_image": ImgID,})
-	if result.Error != nil {
-		response := map[string]string{
-			"message": "not add image",
-		}
-		c.JSON(500, response)
-		return
-	}
+	
+	// cate := model.Category{
+	// 	ID: BlogForm.Category,
+	// }
+	// fmt.Println(Cate)
+	// AssociationErrors := DbEngine.Model(blog).Association("Tags").Append(Cate)
+	// if AssociationErrors.Error != nil {
+	// 	response := map[string]string{
+	// 		"message": "not add Category",
+	// 	}
+	// 	c.JSON(400, response)
+	// 	return
+	// }
 	response := map[string]interface{}{
 		"message": "ok",
 		"blog": blog,
