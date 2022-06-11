@@ -83,12 +83,14 @@ func BlogUploadImageS3(c *gin.Context, username string, blogID uint) (string, er
 
 	err := godotenv.Load("./config.env")
 	if err != nil {
+		log.Fatal("ファイルのうけとりができませんでした")
 		fmt.Println("not read confg.env")
 		return "", err
 	}
 	
 	file, header, err := c.Request.FormFile("file")
 	if err != nil {
+		log.Fatal("ファイルのうけとりができませんでした")
 		return "", fmt.Errorf("ファイルのうけとりができませんでした")
 	}
 	
@@ -123,6 +125,7 @@ func BlogUploadImageS3(c *gin.Context, username string, blogID uint) (string, er
 func ReNameBlog(fileName, username string, blogID uint) (string, error) {
 	FileNameArray := strings.Split(fileName, ".")
 	if len(FileNameArray) >= 3 {
+		log.Fatal("不適切なファイル")
 		return "", fmt.Errorf("不適切なファイル")
 	}
 	Filetype := FileNameArray[len(FileNameArray)-1]

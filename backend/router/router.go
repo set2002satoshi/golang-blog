@@ -31,10 +31,9 @@ func SetUpRouter() {
 	}
 	v3 := router.Group("/api")
 	{
-		v3.GET("/Category", controller.CategoryAll)
-		v3.PUT("/Category_add", controller.AddCategory)
-		
-
+		v3.GET("/Tag", controller.TagAll)
+		v3.PUT("/Tag_add", controller.AddTag)
+		v3.DELETE("/Tag_all", controller.TagAllDelete)
 	}
 	V4 := router.Group("api/Customer")
 	{
