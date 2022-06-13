@@ -3,10 +3,13 @@ package controller
 import (
 	"fmt"
 	"log"
+	"strconv"
 
 	// "net//http"
 	"github.com/gin-gonic/gin"
 	// "gorm.io/gorm"
+
+
 
 	"github.com/set2002satoshi/golang-blog/db"
 	"github.com/set2002satoshi/golang-blog/model"
@@ -43,7 +46,7 @@ func BlogOneDelete(c *gin.Context) {
 	num := c.Query("id")
 	DbEngine.Where("id = ?", num).First(&Blog)
 
-	err := service.ArticleDeleteImageS3(c, string(Blog.BlogImage))
+	err := service.BlogDeleteImageS3(c, string(Blog.BlogImage))
 	if err != nil {
 		response := map[string]interface{}{
 			"message": "s3 error",
@@ -88,33 +91,45 @@ func BlogAllDelete(c *gin.Context){
 
 
 func BlogCreate(c *gin.Context) {
-	// username := "user"
 	DbEngine := db.ConnectDB()
 	var BlogForm model.BlogForm
-	err := c.Bind(&BlogForm)
-	var tag model.Tag
-	if result := DbEngine.Where("id = ?", BlogForm.Tag).First(&tag); result.Error != nil {
-		response := map[string]string{
-			"message": "not category",
-		}
-		c.JSON(400, response)
-		return
-	}
+	Num, err := service.CheckUser(c)
 	if err != nil {
+		response := map[string]string{
+			"message": "Unauthorized",
+		}
+		c.JSON(401, response)
+		return 
+	}
+	fmt.Println(Num)
+	userID, _ := strconv.Atoi(Num)
+	fmt.Println(userID)
+	if err := c.Bind(&BlogForm);err != nil {
 		response := map[string]string{
 			"message": "not Bind",
 		}
 		c.JSON(400, response)
 		return
 	}
+	var userInfo model.CustomerInfo
+	DbEngine.Where("id = ?", userID).First(&userInfo)
+	fmt.Println(userInfo)
+	var tag model.Tag
+	if result := DbEngine.Where("id = ?", BlogForm.Tag).Find(&tag); result.Error != nil {
+		response := map[string]string{
+			"message": "not category",
+		}
+		c.JSON(400, response)
+		return
+	}
 	blog := model.Blog{
+		CustomerInfoID: userInfo.ID,
 		Title: BlogForm.Title,
 		Subtitle: BlogForm.Subtitle,
 		Content: BlogForm.Content,
 		Tags: []model.Tag{tag},
 	}
-	result := DbEngine.Create(&blog)
-	if result.Error != nil {
+	if result := DbEngine.Create(&blog); result.Error != nil {
 		response := map[string]string{
 			"message": "not create text",
 		}
@@ -122,40 +137,36 @@ func BlogCreate(c *gin.Context) {
 		return
 	}
 	fmt.Println(blog)
-	// ImgID, err := service.BlogUploadImageS3(c, username, blog.ID)
-	// if err != nil {
-	// 	response := map[string]string{
-	// 		"message": "not create image",
-	// 	}
-	// 	c.JSON(500, response)
-	// 	return
-	// }
-	// result = DbEngine.Model(&blog).Select("blog_image").Updates(map[string]interface{}{"blog_image": ImgID,})
-	// if result.Error != nil {
-	// 	response := map[string]string{
-	// 		"message": "not add image",
-	// 	}
-	// 	c.JSON(500, response)
-	// 	return
-	// }
+
+	ImgID, err := service.BlogUploadImageS3(c, Num, blog.ID)
+	if err != nil {
+		response := map[string]string{
+			"message": "not create image",
+		}
+		c.JSON(500, response)
+		return
+	}
+	if result := DbEngine.Model(&blog).Select("blog_image").Updates(map[string]interface{}{"blog_image": ImgID,}); result.Error != nil {
+		response := map[string]string{
+			"message": "not add image",
+		}
+		c.JSON(500, response)
+		return
+	}
+
+	if result := DbEngine.Model(&userInfo).Association("Blogs").Append(&blog);result.Error != nil {
+		service.BlogDeleteImageS3(c, blog.BlogImage)
+		DbEngine.Delete(&blog)
+		fmt.Println("userとの紐付けに失敗したので全ての処理を削除")
+		return
+	}
+	
 	
 
-	
-	// cate := model.Category{
-	// 	ID: BlogForm.Category,
-	// }
-	// fmt.Println(Cate)
-	// AssociationErrors := DbEngine.Model(blog).Association("Tags").Append(Cate)
-	// if AssociationErrors.Error != nil {
-	// 	response := map[string]string{
-	// 		"message": "not add Category",
-	// 	}
-	// 	c.JSON(400, response)
-	// 	return
-	// }
 	response := map[string]interface{}{
 		"message": "ok",
 		"blog": blog,
+		"user": userInfo,
 	}
 	c.JSON(200, response)
 }

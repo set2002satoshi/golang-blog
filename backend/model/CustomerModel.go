@@ -8,7 +8,7 @@ type CustomerInfo struct {
 	gorm.Model
 	Email    string `json:"email" gorm:"unique;not null"`
 	Password []byte `json:"password" gorm:"not null"`
-	// Blog     []Blog
+	Blogs     []Blog `json:"blogs" gorm:"foreignKey:CustomerInfoID"`
 	// Customer Customer
 }
 
