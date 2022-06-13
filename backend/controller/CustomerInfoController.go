@@ -17,6 +17,16 @@ import (
 	// "github.com/set2002satoshi/golang-blog/service"
 )
 
+func CustomerInfoAll(c *gin.Context) {
+	DbEngine := db.ConnectDB()
+	CustomerInfo := []model.CustomerInfo{}
+	DbEngine.Preload("Blogs.Tags").Preload("Blogs").Find(&CustomerInfo)
+	c.JSON(200, gin.H{
+		"user": CustomerInfo,
+	})
+}
+
+
 func CustomerInfoCreate(c *gin.Context) {
 	var CustomerForm model.CustomerInfoForm
 	DbEngine := db.ConnectDB()

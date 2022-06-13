@@ -9,13 +9,12 @@ import (
 )
 
 
-func ClickUser(c *gin.Context) (userID string, err error) {
+func CheckUser(c *gin.Context) (userID string, err error) {
 	err = godotenv.Load("./config.env")
 	if err != nil {
 		fmt.Println("400 not read config.env")
 		return "", err
 	}
-	 
 	// cookie, err := c.Cookie("clientKey")
 	cookie  := c.Request.Header.Get("clientKey")
 
