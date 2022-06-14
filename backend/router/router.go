@@ -18,15 +18,16 @@ func SetUpRouter() {
 	))
 	v1 := router.Group("/api")
 	{
-		v1.GET("/customerInfo_all", controller.CustomerInfoAll)
-		v1.POST("/User", controller.CustomerInfoCreate)
-		v1.POST("/Certification", controller.Login)
+		v1.GET("/customer-info_all", controller.CustomerInfoAll)
+		v1.GET("/my-customer-info_all", controller.MyCustomerInfoAll)
+		v1.POST("/user-create", controller.CustomerInfoCreate)
+		v1.POST("/certification", controller.Login)
 	}
-	v2 := router.Group("/api")
+	v2 := router.Group("/api/category")
 	{
 		v2.GET("/tag", controller.TagAll)
-		v2.PUT("/tag_add", controller.AddTag)
-		v2.DELETE("/tag_all", controller.TagAllDelete)
+		v2.PUT("/tag_push", controller.AddTag)
+		v2.DELETE("/tag_all", gicontroller.TagAllDelete)
 	}
 	v3 := router.Group("/api/app")
 	{
@@ -36,12 +37,13 @@ func SetUpRouter() {
 		v3.DELETE("/blog", controller.BlogOneDelete)
 		v3.DELETE("/blog_all", controller.BlogAllDelete)
 	}
-	V4 := router.Group("api/Customer")
+	v4 := router.Group("api/Customer")
 	{
-		V4.GET("/customer", controller.CustomerOne)
-		V4.GET("/customer_all", controller.CustomerAll)
-		V4.POST("/customer_push", controller.CustomerCreate)
-		V4.DELETE("/customer", controller.CustomerOneDelete)
+		v4.GET("/customer", controller.CustomerOne)
+		v4.GET("/my-customer", controller.MyCustomerAll)
+		v4.GET("/customer_all", controller.CustomerAll)
+		v4.POST("/customer_push", controller.CustomerCreate)
+		v4.DELETE("/customer", controller.CustomerOneDelete)
 		// v3.DELETE("/customer_all", controller.Customer)
 
 		
