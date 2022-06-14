@@ -3,6 +3,7 @@ package controller
 import (
 	"log"
 	"fmt"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 
@@ -10,17 +11,6 @@ import (
 	"github.com/set2002satoshi/golang-blog/model"
 	"github.com/set2002satoshi/golang-blog/service"
 )
-
-
-
-func CustomerAll(c *gin.Context){
-	DbEngine := db.ConnectDB()
-	Customer := []model.Customer{}
-	DbEngine.Find(&Customer)
-	c.JSON(200, gin.H{
-		"user": Customer,
-	})
-}
 
 func CustomerOne(c *gin.Context) {
 	DbEngine := db.ConnectDB()
@@ -37,6 +27,37 @@ func CustomerOne(c *gin.Context) {
 	c.JSON(200, &Customer)	
 }
 
+func MyCustomerAll(c *gin.Context) {
+	DbEngine := db.ConnectDB()
+	Num, err := service.CheckUser(c)
+	if err != nil {
+		response := map[string]string{
+			"message": "Unauthorized",
+		}
+		c.JSON(401, response)
+		return 
+	}
+	fmt.Println(Num)
+	userID, _ := strconv.Atoi(Num)
+	customer := []model.Customer{}
+	DbEngine.Where("id = ?", userID).Find(&customer)
+	c.JSON(200, gin.H{
+		"message": "ok",
+		"data": customer,
+	})
+}
+
+
+func CustomerAll(c *gin.Context){
+	DbEngine := db.ConnectDB()
+	Customer := []model.Customer{}
+	DbEngine.Find(&Customer)
+	c.JSON(200, gin.H{
+		"user": Customer,
+	})
+}
+
+
 func CustomerOneDelete(c *gin.Context) {
 	DbEngine := db.ConnectDB()
 	Customer := []model.Customer{}
@@ -50,10 +71,25 @@ func CustomerOneDelete(c *gin.Context) {
 }
 
 func CustomerCreate(c *gin.Context) {
-	username := "user"
 	DbEngine := db.ConnectDB()
+	Num, err := service.CheckUser(c)
+	if err != nil {
+		response := map[string]string{
+			"message": "Unauthorized",
+		}
+		c.JSON(401, response)
+		return 
+	}
+	fmt.Println(Num)
+	UserID, _ := strconv.Atoi(Num)
+	fmt.Println(UserID)
+	var userInfo model.CustomerInfo
+	DbEngine.Where("id = ?", UserID).First(&userInfo)
+	fmt.Println(userInfo)
+
+	// username := "user"
 	var CustomerForm model.CustomerForm
-	err := c.Bind(&CustomerForm)
+	err = c.Bind(&CustomerForm)
 	if err != nil {
 		response := map[string]string{
 			"message": "not Bind",
@@ -62,6 +98,7 @@ func CustomerCreate(c *gin.Context) {
 		return
 	}
 	Customer := model.Customer{
+		CustomerInfoID: userInfo.ID,
 		Name: CustomerForm.Name,
 		// Thumbnail: CustomerForm.Thumbnail,
 		Message: CustomerForm.Message,
@@ -75,7 +112,7 @@ func CustomerCreate(c *gin.Context) {
 		return
 	}
 	fmt.Println(Customer.ID)
-	ImgID, err := service.CustomerUploadImageS3(c, username, Customer.ID)
+	ImgID, err := service.CustomerUploadImageS3(c, Num, Customer.ID)
 	if err != nil {
 		response := map[string]string{
 			"message": "not create image",

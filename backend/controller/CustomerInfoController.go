@@ -14,17 +14,38 @@ import (
 
 	"github.com/set2002satoshi/golang-blog/db"
 	"github.com/set2002satoshi/golang-blog/model"
-	// "github.com/set2002satoshi/golang-blog/service"
+	"github.com/set2002satoshi/golang-blog/service"
 )
 
 func CustomerInfoAll(c *gin.Context) {
 	DbEngine := db.ConnectDB()
 	CustomerInfo := []model.CustomerInfo{}
-	DbEngine.Preload("Blogs.Tags").Preload("Blogs").Find(&CustomerInfo)
+	// DbEngine.Find(&CustomerInfo)
+	DbEngine.Preload("Blogs.Tags").Preload("Blogs").Preload("Customer").Find(&CustomerInfo)
 	c.JSON(200, gin.H{
 		"user": CustomerInfo,
 	})
 }
+
+func MyCustomerInfoAll(c *gin.Context) {
+	DbEngine := db.ConnectDB()
+	CustomerInfo := []model.CustomerInfo{}
+	Num, err := service.CheckUser(c)
+	if err != nil {
+		response := map[string]string{
+			"message": "Unauthorized",
+		}
+		c.JSON(401, response)
+		return 
+	}
+	userID, _ := strconv.Atoi(Num)
+	DbEngine.Where("id = ?", userID).Preload("Blogs.Tags").Preload("Blogs").Preload("Customer").Find(&CustomerInfo)
+	c.JSON(200, gin.H{
+		"user": CustomerInfo,
+	})
+}
+
+
 
 
 func CustomerInfoCreate(c *gin.Context) {
