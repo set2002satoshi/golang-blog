@@ -22,3 +22,16 @@ services:
       MYSQL_DATABASE: main
       MYSQL_USER: docker
       MYSQL_PASSWORD: pass
+  front:
+      build:
+        context: .
+        dockerfile: ./frontend/Dockerfile
+      container_name: front-react
+      tty: true
+      volumes:
+      - ./frontend:/app/front
+      command: sh -c "cd /app/front/myapp && yarn install  && yarn start"
+      ports:
+        - 3000:3000
+      depends_on:
+      - backend
