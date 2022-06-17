@@ -1,5 +1,16 @@
 version: "3"
 services:
+  front-app:
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    volumes:
+      - ./frontend:/usr/src/app 
+    command: sh -c "cd fornt-app && npm run dev"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
   backend:
     build:
       context: .
@@ -22,16 +33,3 @@ services:
       MYSQL_DATABASE: main
       MYSQL_USER: docker
       MYSQL_PASSWORD: pass
-  front:
-      build:
-        context: .
-        dockerfile: ./frontend/Dockerfile
-      container_name: front-react
-      tty: true
-      volumes:
-      - ./frontend:/app/front
-      command: sh -c "cd /app/front/myapp && yarn install  && yarn start"
-      ports:
-        - 3000:3000
-      depends_on:
-      - backend
