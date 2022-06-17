@@ -27,7 +27,7 @@ func SetUpRouter() {
 	{
 		v2.GET("/tag", controller.TagAll)
 		v2.PUT("/tag_push", controller.AddTag)
-		v2.DELETE("/tag_all", gicontroller.TagAllDelete)
+		v2.DELETE("/tag_all", controller.TagAllDelete)
 	}
 	v3 := router.Group("/api/app")
 	{
