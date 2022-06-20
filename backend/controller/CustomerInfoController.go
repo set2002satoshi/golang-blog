@@ -67,17 +67,33 @@ func CustomerInfoCreate(c *gin.Context) {
 		c.JSON(203, response)
 		return
 	}
-	Customer := model.CustomerInfo{
+	CustomerInfoData := model.CustomerInfo{
 		Email:    CustomerForm.Email,
 		Password: pass,
 	}
-	resp := DbEngine.Create(&Customer)
-	if resp.Error != nil {
+	if resp := DbEngine.Create(&CustomerInfoData); resp.Error != nil {
+		fmt.Println("errだよ")
 		c.JSON(203, resp.Error)
 		return
 	}
+	Customer := model.Customer{
+		 CustomerInfoID: CustomerInfoData.ID,
+		 Name:  CustomerForm.Name,
+	}
+	if resp := DbEngine.Create(&Customer); resp.Error != nil {
+		c.JSON(203, resp.Error)
+		var CI model.CustomerInfo
+		DbEngine.Model(&CI).Delete(CustomerInfoData.ID)
+		DbEngine.Where("ID = ?", CustomerInfoData.ID).First(&CI)
+		c.JSON(203, gin.H{"gakuni": CI})
+		return 
+	}
+	
+	
+	
 	c.JSON(200, gin.H{
-		"Customer": Customer,
+		"CustomerInfo": CustomerInfoData,
+
 	})
 }
 

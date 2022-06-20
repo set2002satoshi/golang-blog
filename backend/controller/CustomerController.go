@@ -83,13 +83,13 @@ func CustomerCreate(c *gin.Context) {
 	fmt.Println(Num)
 	UserID, _ := strconv.Atoi(Num)
 	fmt.Println(UserID)
-	var userInfo model.CustomerInfo
-	DbEngine.Where("id = ?", UserID).First(&userInfo)
-	fmt.Println(userInfo)
+	var CustomerInfo model.CustomerInfo
+	DbEngine.Where("id = ?", UserID).Preload("Customer").First(&CustomerInfo)
+	fmt.Println(CustomerInfo.Customer)
 
 	// username := "user"
-	var CustomerForm model.CustomerForm
-	err = c.Bind(&CustomerForm)
+	var CustomerMsgForm model.CustomerMsgForm
+	err = c.Bind(&CustomerMsgForm)
 	if err != nil {
 		response := map[string]string{
 			"message": "not Bind",
@@ -97,22 +97,21 @@ func CustomerCreate(c *gin.Context) {
 		c.JSON(400, response)
 		return
 	}
-	Customer := model.Customer{
-		CustomerInfoID: userInfo.ID,
-		Name: CustomerForm.Name,
-		// Thumbnail: CustomerForm.Thumbnail,
-		Message: CustomerForm.Message,
-	}
-	result := DbEngine.Create(&Customer)
-	if result.Error != nil {
-		response := map[string]string{
-			"message": "not create text",
-		}
-		c.JSON(400, response)
-		return
-	}
-	fmt.Println(Customer.ID)
-	ImgID, err := service.CustomerUploadImageS3(c, Num, Customer.ID)
+	fmt.Println(CustomerMsgForm)
+	// Customer := model.Customer{
+	// 	// Thumbnail: CustomerForm.Thumbnail,
+	// 	Message: CustomerForm.Message,
+	// }
+	// result := DbEngine.Create(&Customer)
+	// if result.Error != nil {
+	// 	response := map[string]string{
+	// 		"message": "not create text",
+	// 	}
+	// 	c.JSON(400, response)
+	// 	return
+	// }
+	fmt.Println(CustomerInfo.Customer.ID)
+	ObjectKey, err := service.CustomerUploadImageS3(c, Num, CustomerInfo.Customer.ID)
 	if err != nil {
 		response := map[string]string{
 			"message": "not create image",
@@ -120,7 +119,19 @@ func CustomerCreate(c *gin.Context) {
 		c.JSON(500, response)
 		return
 	}
-	result = DbEngine.Model(&Customer).Update("thumbnail", ImgID)
+
+	fmt.Println("1")
+
+	CustomerCatching := model.CustomerForm{
+		Thumbnail: ObjectKey,
+		Message: CustomerMsgForm.Message,
+	}
+
+	fmt.Println(CustomerCatching)
+
+	// result := DbEngine.Model(&Customer).Update("thumbnail", ImgID)
+	Customer := []model.Customer{}
+	result := DbEngine.Model(&Customer).Where("id = ?", CustomerInfo.Customer.ID).Updates(&CustomerCatching)
 	if result.Error != nil {
 		response := map[string]string{
 			"message": "not add image",
