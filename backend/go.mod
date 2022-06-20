@@ -9,6 +9,8 @@ require (
 	gorm.io/gorm v1.23.5
 )
 
+require github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
+
 require (
 	github.com/aws/aws-sdk-go v1.44.25
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible

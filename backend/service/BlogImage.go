@@ -1,7 +1,6 @@
 package service
 
 import (
-
 	"github.com/gin-gonic/gin"
 
 	// imgupload "github.com/olahol/go-imageupload"
@@ -14,18 +13,18 @@ import (
 
 	// アップロードandダウンロード
 	"fmt"
-	"strings"
+
 	"log"
 	"os"
-	
-
+	"strings"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/joho/godotenv"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
+	"github.com/joho/godotenv"
+
 )
 
 
@@ -93,7 +92,8 @@ func BlogUploadImageS3(c *gin.Context, userID string, blogID uint) (string, erro
 		log.Fatal("ファイルのうけとりができませんでした")
 		return "", fmt.Errorf("ファイルのうけとりができませんでした")
 	}
-	
+
+
 	fileName, err := ReNameBlog(header.Filename, userID, blogID)
 
 	creds := credentials.NewStaticCredentials(os.Getenv("AWS_ACCESS_KEY_ID"), os.Getenv("AWS_SECRET_ACCESS_KEY"), "")
