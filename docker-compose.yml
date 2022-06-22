@@ -6,7 +6,7 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./frontend:/usr/src/app 
-    command: sh -c "cd fornt-app && npm run dev"
+    command: sh -c "cd next-app && yarn dev"
     ports:
       - "3000:3000"
     depends_on:

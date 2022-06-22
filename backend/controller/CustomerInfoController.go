@@ -51,6 +51,12 @@ func MyCustomerInfoAll(c *gin.Context) {
 func CustomerInfoCreate(c *gin.Context) {
 	var CustomerForm model.CustomerInfoForm
 	DbEngine := db.ConnectDB()
+	if c.Request.Method == "OPTION" {
+		err := "Method is OPTION"
+		c.JSON(200, err)
+		fmt.Println(err)
+		return
+	}
 	err := c.BindJSON(&CustomerForm)
 	if err != nil {
 		response := map[string]string{
