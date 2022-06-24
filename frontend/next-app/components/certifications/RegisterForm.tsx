@@ -36,14 +36,15 @@ const RegisterForm: FC  = () => {
                 if (resp.ok) {
                     console.log(resp.status)
                     setRedirect(true);
+                    router.push('/home');
                 }}
                 ) 
             } catch {
                 console.log("aaaf");
             }
-            if (Redirect) {
-                await router.push('/home');
-            }
+    
+        
+            
         
             
             
