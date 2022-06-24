@@ -17,6 +17,7 @@ func SetUpRouter() {
 			"POST",
 			"GET",
 			"OPTIONS",
+			"DELETE",
 		},
 
 		AllowHeaders: []string{
@@ -31,9 +32,10 @@ func SetUpRouter() {
 	{
 		v1.GET("/customer-info_all", controller.CustomerInfoAll)
 		v1.GET("/my-customer-info_all", controller.MyCustomerInfoAll)
-		v1.OPTIONS("/create-user", controller.CustomerInfoCreate)
 		v1.POST("/create-user", controller.CustomerInfoCreate)
 		v1.POST("/certification", controller.Login)
+		v1.DELETE("/customer-info_all", controller.CustomerInfoAllDelete)
+		v1.OPTIONS("/create-user", controller.CustomerInfoCreate)
 	}
 	v2 := router.Group("/api/category")
 	{
@@ -56,7 +58,7 @@ func SetUpRouter() {
 		v4.GET("/customer_all", controller.CustomerAll)
 		v4.POST("/customer_push", controller.CustomerCreate)
 		v4.DELETE("/customer", controller.CustomerOneDelete)
-		// v3.DELETE("/customer_all", controller.Customer)
+		v4.DELETE("/customer_all", controller.CustomerAllDelete)
 
 		
 
