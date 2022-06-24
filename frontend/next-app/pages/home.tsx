@@ -4,7 +4,7 @@ import Head from 'next/head'
 import RegisterForm from '../components/certifications/RegisterForm'
 
 
-const Home: NextPage = () => {
+const home: NextPage = () => {
     return (
         <div>
             <h1>home</h1>    
@@ -13,4 +13,4 @@ const Home: NextPage = () => {
 
 }
 
-export default Home
+export default home
