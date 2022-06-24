@@ -1,6 +1,7 @@
 package router
 
 import (
+	"time"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/set2002satoshi/golang-blog/controller"
@@ -8,20 +9,33 @@ import (
 
 func SetUpRouter() {
 	router := gin.Default()
-	router.Use(cors.New(
-		cors.Config{
-			AllowOrigins:     []string{"http://localhost:3000"},
-			AllowCredentials: true,
-			AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
-			AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+	router.Use(cors.New(cors.Config{
+		AllowOrigins: []string{
+			"http://localhost:3000",
 		},
-	))
+		AllowMethods: []string{
+			"POST",
+			"GET",
+			"OPTIONS",
+			"DELETE",
+		},
+
+		AllowHeaders: []string{
+			"*",
+		},
+
+		AllowCredentials: true,
+
+		MaxAge: 24 * time.Hour,
+	}))
 	v1 := router.Group("/api")
 	{
 		v1.GET("/customer-info_all", controller.CustomerInfoAll)
 		v1.GET("/my-customer-info_all", controller.MyCustomerInfoAll)
 		v1.POST("/create-user", controller.CustomerInfoCreate)
 		v1.POST("/certification", controller.Login)
+		v1.DELETE("/customer-info_all", controller.CustomerInfoAllDelete)
+		v1.OPTIONS("/create-user", controller.CustomerInfoCreate)
 	}
 	v2 := router.Group("/api/category")
 	{
@@ -44,7 +58,7 @@ func SetUpRouter() {
 		v4.GET("/customer_all", controller.CustomerAll)
 		v4.POST("/customer_push", controller.CustomerCreate)
 		v4.DELETE("/customer", controller.CustomerOneDelete)
-		// v3.DELETE("/customer_all", controller.Customer)
+		v4.DELETE("/customer_all", controller.CustomerAllDelete)
 
 		
 

@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+
 	"net/http"
 	"os"
 	"strconv"
@@ -51,6 +52,12 @@ func MyCustomerInfoAll(c *gin.Context) {
 func CustomerInfoCreate(c *gin.Context) {
 	var CustomerForm model.CustomerInfoForm
 	DbEngine := db.ConnectDB()
+	if c.Request.Method == "OPTION" {
+		err := "Method is OPTION"
+		c.JSON(200, err)
+		fmt.Println(err)
+		return
+	}
 	err := c.BindJSON(&CustomerForm)
 	if err != nil {
 		response := map[string]string{
@@ -158,3 +165,28 @@ func Login(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, response)
 }
+
+
+// func CustomerInfoOneDelete(c *gin.Context) {
+// 	DbEngine := db.ConnectDB()
+// 	var 
+// }
+
+func CustomerInfoAllDelete(c *gin.Context) {
+	DbEngine := db.ConnectDB()
+	 CustomerInfoTable := []model.CustomerInfo{}
+	// DbEngine.Find(&CustomerInfoTable)
+	DbEngine.Preload("Customer").Preload("blogs").Find(&CustomerInfoTable)
+	result := DbEngine.Unscoped().Delete(&CustomerInfoTable)
+	if result.Error != nil {
+		response := map[string]string{
+			"message": "Not Delete CustomerInfo",
+		}
+		c.JSON(500, response) 
+	}
+	response := map[string]string{
+		"message": "successfully Delete CustomerInfo",
+	}
+	c.JSON(200, response)
+}
+

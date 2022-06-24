@@ -8,8 +8,9 @@ type CustomerInfo struct {
 	gorm.Model
 	Email    string `json:"email" gorm:"unique;not null"`
 	Password []byte `json:"password" gorm:"not null"`
-	Blogs    []Blog `json:"blogs" gorm:"foreignKey:CustomerInfoID"`
-	Customer Customer
+	Blogs    []Blog `json:"blogs" gorm:"foreignKey:CustomerInfoID; constraint:OnUpdate:CASCADE, OnDelete:CASCADE;"`
+	Customer Customer `json:"customer" gorm:"constraint:OnUpdate:CASCADE, OnDelete:CASCADE;"`
+	// Customer Customer `gorm:"constraint:OnUpdate:CASCADE, OnDelete:SET NULL"`
 }
 
 type Customer struct {
@@ -35,9 +36,9 @@ type CustomerForm struct {
 
 
 type CustomerInfoForm struct {
-	Email    string `json:"email"`
+	Email    string `json:"email" gorm:"unique;not null"`
 	Password string `json:"password"`
-	Name     string `json:"name"`
+	Name     string `json:"name" gorm:"unique;not null"`
 }
 
 type LoginForm struct {
