@@ -11,7 +11,7 @@ const Register: NextPage = () => {
     const [Redirect, setRedirect] = useState<boolean>(false);
     const router = useRouter()
 
-    const [name, setName] = useState<string>("");
+    const [username, setName] = useState<string>("");
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
 
@@ -19,14 +19,14 @@ const Register: NextPage = () => {
         const data = {
             email,
             password,
-            name
+            username
         }
 
         try {
             await fetch(url, {
                 method: "POST",
                 headers: {
-                    'Content-Type': 'application',
+                    'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': 'http://localhost:8000',
                 },
                 body: JSON.stringify(data),
@@ -34,26 +34,28 @@ const Register: NextPage = () => {
             if (resp.ok) {
                 console.log(resp.status)
                 setRedirect(true)
-            }}
-            ) 
+            }
+        }) 
         } catch {
             console.log("err");
         }    
         if (Redirect) {
-            router.replace('/home')
+            router.replace('/login')
         }
     }
     return (
         <div>
             <RegisterForm
                 setName={setName}
-                Name={name}
+                Name={username}
                 setEmail={setEmail} 
                 Email={email} 
                 setPassword={setPassword}
                 Password={password}
+                EventsTrigger={submit}
             />
-            <input type="submit" className="btn btn-primary" onClick={submit}/>
+            {/* <input type="submit" className="btn btn-primary" onClick={submit}/> */}
+            {/* <input type="submit" className="btn btn-primary" /> */}
         </div>
     )
 
