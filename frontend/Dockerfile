@@ -2,6 +2,9 @@ FROM node:14.17.0
 WORKDIR /usr/src/app
 
 
+RUN yarn add --dev @types/react
+
+
 # RUN npm install next@11.1.1-canary.7
 # RUN npm install --save prop-types
 # RUN npm install -g create-next-app

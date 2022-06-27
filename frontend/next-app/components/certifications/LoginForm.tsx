@@ -1,10 +1,7 @@
 import React, { Dispatch, SetStateAction } from 'react';
-import styles from './RegisterForm.module.css';
-
+import styles from './LoginForm.module.css';
 
 type Props = {
-    setName: Dispatch<SetStateAction<string>>
-    Name: string
     setEmail: Dispatch<SetStateAction<string>>
     Email: string
     setPassword: Dispatch<SetStateAction<string>>
@@ -12,21 +9,13 @@ type Props = {
     EventsTrigger: VoidFunction
 }
 
-const RegisterForm = (props: Props) => {
+
+const LoginForm = (props: Props) => {
     return (
         <div className={styles.box_P}>
             <div className={styles.box_C}>
+                {/* <form method="POST"> */}
                 <form method="POST">
-                    <div className="mb-3">
-                        <label htmlFor="exampleInputPassword1" className="form-label">Id Name</label>
-                        <input 
-                            type="text" 
-                            className="form-control" 
-                            id="exampleInputPassword1" 
-                            value={props.Name} 
-                            onChange={e => props.setName(e.target.value)} 
-                        />
-                    </div>
                     <div className="mb-3">
                         <label 
                             htmlFor="exampleInputEmail1" 
@@ -47,13 +36,16 @@ const RegisterForm = (props: Props) => {
                         <label htmlFor="exampleInputPassword1" className="form-label">Password</label>
                         <input type="password" className="form-control" id="exampleInputPassword1" value={props.Password} onChange={e => props.setPassword(e.target.value)} />
                     </div>
-                    <input type="submit" className="btn btn-primary" onClick={props.EventsTrigger}/>
-                    {/* <input type="submit" className="btn btn-primary" /> */}
-                    
+                    <input type="button" value="Login" className="btn btn-primary" onClick={props.EventsTrigger}/>
                 </form>
             </div>
         </div>
     )
 }
 
-export default RegisterForm;
+export default LoginForm
+
+
+
+
+
