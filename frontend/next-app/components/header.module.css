@@ -1,0 +1,29 @@
+
+
+
+#a1_0 {
+    width: 100%;
+    height: auto;
+    display: flex;
+    justify-content: space-between;
+    background-color: #fff;
+}
+
+
+
+
+
+
+
+.b1_2 {
+    width: 40%;
+    display: flex;
+    justify-content: space-between;
+}
+.b1_2 div {
+    margin: auto 0;
+}
+
+
+
+

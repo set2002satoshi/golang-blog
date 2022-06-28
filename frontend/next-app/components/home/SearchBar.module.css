@@ -1,0 +1,31 @@
+
+
+
+
+#a1_0 {
+    width: 100%;
+}
+
+.c1_0 {
+    margin: 40px auto;
+    display: flex;
+    justify-content: center;
+}
+
+.d1_0 {
+    background-color: #fff;
+    min-width: 250px;
+    height: 40px;
+    border-radius: 8px;
+    border: #EBEBEB solid 1px;
+    padding: 0 0 0 15px;
+    margin: 0 20px;
+    color: #D9D9D9;
+}
+.d1_1 {
+    background-color: #0079FF;
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+
+}
