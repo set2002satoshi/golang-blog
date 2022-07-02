@@ -20,7 +20,7 @@
 .content {
   width: 75%;
   height: auto;
-  border: 1px solid #000;
+  /* border: 1px solid #000; */
   margin: 100px auto;
 }
 
@@ -29,4 +29,19 @@
   margin: 0 auto 100px auto;
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.contentColumn > div {
+  margin-bottom: 100px;
+}
+
+
+.loadContent {
+  margin: 100px auto;
+}
+
+.loadContent > div > span {
+  width: 100px;
+  height: 100px;
 }

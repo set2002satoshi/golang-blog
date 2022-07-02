@@ -78,7 +78,7 @@ func BlogDeleteImageS3(c *gin.Context, objectKey string) (error) {
 	return nil
 }
 
-func BlogUploadImageS3(c *gin.Context, userID string, blogID uint) (string, error) {
+func BlogUploadImageS3(c *gin.Context, userID int, blogID uint) (string, error) {
 
 	err := godotenv.Load("./config.env")
 	if err != nil {
@@ -122,7 +122,7 @@ func BlogUploadImageS3(c *gin.Context, userID string, blogID uint) (string, erro
 }
 
 
-func ReNameBlog(fileName string, userID string, blogID uint) (string, error) {
+func ReNameBlog(fileName string, userID int, blogID uint) (string, error) {
 	FileNameArray := strings.Split(fileName, ".")
 	if len(FileNameArray) >= 3 {
 		log.Fatal("不適切なファイル")

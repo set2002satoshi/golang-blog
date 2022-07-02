@@ -72,9 +72,9 @@ func CustomerOneDelete(c *gin.Context) {
 
 func CustomerAllDelete(c *gin.Context) {
 	DbEngine := db.ConnectDB()
-	CA := []model.Customer{}
-	DbEngine.Find(&CA)
-	result := DbEngine.Delete(&CA)
+	Customer := []model.Customer{}
+	DbEngine.Find(&Customer)
+	result := DbEngine.Unscoped().Delete(&Customer)
 	if result.Error != nil {
 		response := map[string]interface{}{
 			"message": "db error",
@@ -82,7 +82,8 @@ func CustomerAllDelete(c *gin.Context) {
 		c.JSON(400, response)
 		return
 	}
-	err := service.BlogAllDeleteImageS3(c)
+
+	err := service.CustomerAllDeleteImageS3(c)
 
 	if err != nil {
 		response := map[string]interface{}{
@@ -91,9 +92,12 @@ func CustomerAllDelete(c *gin.Context) {
 		}
 		c.JSON(500, response)
 		return
-	}
-	c.JSON(200, gin.H{"status": "OK", "data": CA})
+		}
+		c.JSON(200, gin.H{"status": "OK", "data":Customer })
 }
+
+
+
 
 
 func CustomerCreate(c *gin.Context) {
@@ -106,9 +110,7 @@ func CustomerCreate(c *gin.Context) {
 		c.JSON(401, response)
 		return 
 	}
-	fmt.Println(Num)
 	UserID, _ := strconv.Atoi(Num)
-	fmt.Println(UserID)
 	var CustomerInfo model.CustomerInfo
 	DbEngine.Where("id = ?", UserID).Preload("Customer").First(&CustomerInfo)
 	fmt.Println(CustomerInfo.Customer)
@@ -137,16 +139,18 @@ func CustomerCreate(c *gin.Context) {
 	// 	return
 	// }
 	fmt.Println(CustomerInfo.Customer.ID)
-	ObjectKey, err := service.CustomerUploadImageS3(c, Num, CustomerInfo.Customer.ID)
+	ObjectKey, err := service.CustomerUploadImageS3(c, UserID, CustomerInfo.Customer.ID)
 	if err != nil {
-		response := map[string]string{
+		response := map[string]interface{}{
 			"message": "not create image",
+			"err": err,
+			"objectKey": ObjectKey,
 		}
 		c.JSON(500, response)
 		return
 	}
 
-	fmt.Println("1")
+
 
 	CustomerCatching := model.CustomerForm{
 		Thumbnail: ObjectKey,

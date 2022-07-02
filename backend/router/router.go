@@ -60,6 +60,7 @@ func SetUpRouter() {
 		v4.DELETE("/customer", controller.CustomerOneDelete)
 		v4.DELETE("/customer_all", controller.CustomerAllDelete)
 
+
 		
 
 	}
