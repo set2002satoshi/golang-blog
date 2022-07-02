@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+
 	"net/http"
 	"os"
 	"strconv"
@@ -166,8 +167,9 @@ func Login(c *gin.Context) {
 func CustomerInfoAllDelete(c *gin.Context) {
 	DbEngine := db.ConnectDB()
 	CustomerInfoTable := []model.CustomerInfo{}
-	// DbEngine.Find(&CustomerInfoTable)
+
 	DbEngine.Preload("Blogs").Preload("Customer").Find(&CustomerInfoTable)
+
 	result := DbEngine.Unscoped().Delete(&CustomerInfoTable)
 	if result.Error != nil {
 		response := map[string]string{
@@ -175,6 +177,7 @@ func CustomerInfoAllDelete(c *gin.Context) {
 		}
 		c.JSON(500, response) 
 		return
+
 	}
 	response := map[string]string{
 		"message": "successfully Delete CustomerInfo",

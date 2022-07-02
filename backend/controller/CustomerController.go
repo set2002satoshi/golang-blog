@@ -62,7 +62,7 @@ func CustomerOneDelete(c *gin.Context) {
 	DbEngine := db.ConnectDB()
 	Customer := []model.Customer{}
 	num := c.Query("id")
-	result := DbEngine.Where("id = ?", num).Delete(&Customer)
+	result := DbEngine.Where("id = ?", num).Unscoped().Delete(&Customer)
 	if result.Error != nil {
 		log.Fatal("削除に失敗")
 		c.JSON(400, gin.H{"err": result.Error})
@@ -82,7 +82,9 @@ func CustomerAllDelete(c *gin.Context) {
 		c.JSON(400, response)
 		return
 	}
+
 	err := service.CustomerAllDeleteImageS3(c)
+
 	if err != nil {
 		response := map[string]interface{}{
 			"message": "500s3 error",
@@ -93,6 +95,7 @@ func CustomerAllDelete(c *gin.Context) {
 		}
 		c.JSON(200, gin.H{"status": "OK", "data":Customer })
 }
+
 
 
 

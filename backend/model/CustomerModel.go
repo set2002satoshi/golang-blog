@@ -6,10 +6,12 @@ import (
 
 type CustomerInfo struct {
 	gorm.Model
+
 	Email    string   `json:"email" gorm:"unique;not null"`
 	Password []byte   `json:"password" gorm:"not null"`
-	Blogs    []Blog   `json:"blogs" gorm:"foreignKey:CustomerInfoID; constraint:OnDelete:CASCADE"`
-	Customer Customer `gorm:"constraint:OnDelete:CASCADE"`
+	Blogs    []Blog `json:"blogs" gorm:"foreignKey:CustomerInfoID; constraint:OnUpdate:CASCADE, OnDelete:CASCADE;"`
+	Customer Customer `json:"customer" gorm:"constraint:OnUpdate:CASCADE, OnDelete:CASCADE;"`
+
 }
 
 type Customer struct {

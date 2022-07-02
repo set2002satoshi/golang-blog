@@ -17,6 +17,7 @@ func SetUpRouter() {
 			"POST",
 			"GET",
 			"OPTIONS",
+			"DELETE",
 		},
 
 		AllowHeaders: []string{
@@ -58,7 +59,7 @@ func SetUpRouter() {
 		v4.POST("/customer_push", controller.CustomerCreate)
 		v4.DELETE("/customer", controller.CustomerOneDelete)
 		v4.DELETE("/customer_all", controller.CustomerAllDelete)
-		// v3.DELETE("/customer_all", controller.Customer)
+
 
 		
 
