@@ -80,7 +80,7 @@ func CustomerDeleteImageS3(c *gin.Context, objectKey string) (error) {
 }
 
 
-func CustomerUploadImageS3(c *gin.Context, userID string, CustomerID uint) (string, error) {
+func CustomerUploadImageS3(c *gin.Context, userID int, CustomerID uint) (string, error) {
 
 	err := godotenv.Load("./config.env")
 	if err != nil {
@@ -121,13 +121,13 @@ func CustomerUploadImageS3(c *gin.Context, userID string, CustomerID uint) (stri
 }
 
 
-func ReNameProfile(fileName string, userID string, CustomerID uint) (string, error) {
+func ReNameProfile(fileName string, userID int, CustomerID uint) (string, error) {
 	FileNameArray := strings.Split(fileName, ".")
 	if len(FileNameArray) >= 3 {
 		return "", fmt.Errorf("不適切なファイル")
 	}
 	Filetype := FileNameArray[len(FileNameArray)-1]
 	FileFirstName := FileNameArray[len(FileNameArray)-2]
-	FileName := fmt.Sprintf("%s%s%d%s.%s", "Profile", FileFirstName, CustomerID, userID, Filetype)
+	FileName := fmt.Sprintf("%s%s%d%d.%s", "Profile", FileFirstName, CustomerID, userID, Filetype)
 	return FileName, nil
 }

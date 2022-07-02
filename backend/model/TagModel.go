@@ -6,6 +6,6 @@ import (
 
 type Tag struct {
 	gorm.Model
-	Blogs []Blog `json:"blogs" gorm:"many2many:blog_tags;"`
+	Blogs []Blog `json:"blogs" gorm:"many2many:blog_tags; constraint:OnDelete:CASCADE"`
 	Tag  string  `json:"tag"`
 }

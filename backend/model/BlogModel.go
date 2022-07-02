@@ -11,7 +11,7 @@ type Blog struct {
 	Title     string `json:"title" gorm:"size:25;not null"`
 	Subtitle  string `json:"subtitle" gorm:"size:100;not null"`
 	Content   string `json:"content"  gorm:"size:265;not null"`
-	Tags      []Tag  `json:"tags" gorm:"many2many:blog_tags;"`
+	Tags      []Tag  `json:"tags" gorm:"many2many:blog_tags; constraint:OnDelete:CASCADE"`
 }
 
 type BlogForm struct {
@@ -19,5 +19,5 @@ type BlogForm struct {
 	Title    string `form:"title" gorm:"size:25;not null"`
 	Subtitle string `form:"subtitle" gorm:"size:100;not null"`
 	Content  string `form:"content"  gorm:"size:265;not null"`
-	Tag      int    `form:"Tag"`
+	Tag      int    `form:"tag"`
 }

@@ -91,11 +91,9 @@ func CustomerInfoCreate(c *gin.Context) {
 		var CI model.CustomerInfo
 		DbEngine.Model(&CI).Delete(CustomerInfoData.ID)
 		DbEngine.Where("ID = ?", CustomerInfoData.ID).First(&CI)
-		c.JSON(203, gin.H{"gakuni": CI})
+		c.JSON(203, gin.H{"確認": CI})
 		return 
 	}
-	
-	
 	
 	c.JSON(200, gin.H{
 		"CustomerInfo": CustomerInfoData,
@@ -164,3 +162,23 @@ func Login(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, response)
 }
+
+func CustomerInfoAllDelete(c *gin.Context) {
+	DbEngine := db.ConnectDB()
+	CustomerInfoTable := []model.CustomerInfo{}
+	// DbEngine.Find(&CustomerInfoTable)
+	DbEngine.Preload("Blogs").Preload("Customer").Find(&CustomerInfoTable)
+	result := DbEngine.Unscoped().Delete(&CustomerInfoTable)
+	if result.Error != nil {
+		response := map[string]string{
+			"message": "Not Delete CustomerInfo",
+		}
+		c.JSON(500, response) 
+		return
+	}
+	response := map[string]string{
+		"message": "successfully Delete CustomerInfo",
+	}
+	c.JSON(200, response)
+}
+
