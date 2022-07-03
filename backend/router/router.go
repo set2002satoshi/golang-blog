@@ -59,11 +59,15 @@ func SetUpRouter() {
 		v4.POST("/customer_push", controller.CustomerCreate)
 		v4.DELETE("/customer", controller.CustomerOneDelete)
 		v4.DELETE("/customer_all", controller.CustomerAllDelete)
-
-
-		
-
 	}
+	v5 := router.Group("api/main")
+	{
+		v5.GET("/home")
+		v5.GET("/my-profile", controller.GetMyBlogsAdditionallyMyCustomer)
+	}
+	
+
+
 	router.Run(":8080")
 }
 
