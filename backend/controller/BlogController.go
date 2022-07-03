@@ -112,7 +112,7 @@ func BlogCreate(c *gin.Context) {
 		return
 	}
 	var userInfo model.CustomerInfo
-	DbEngine.Where("id = ?", userID).First(&userInfo)
+	DbEngine.Where("id = ?", userID).Preload("Customer").First(&userInfo)
 
 	var tag model.Tag
 	if result := DbEngine.Where("id = ?", BlogForm.Tag).Find(&tag); result.Error != nil {
@@ -125,6 +125,7 @@ func BlogCreate(c *gin.Context) {
 	fmt.Println(userInfo) 
 	blog := model.Blog{
 		CustomerInfoID: userInfo.ID,
+		UserName: userInfo.Customer.Name,
 		Title: BlogForm.Title,
 		Subtitle: BlogForm.Subtitle,
 		Content: BlogForm.Content,
