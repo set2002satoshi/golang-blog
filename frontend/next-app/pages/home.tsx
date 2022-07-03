@@ -98,10 +98,10 @@ const home: NextPage = () => {
                         {blogs.map((blog) => (
                             <div>
                                 <PostCard 
-                                    UserName={"username"}
+                                    UserName={blog.UserName}
                                     UserThumbnail={"https://via.placeholder.com/1400x500"}
                                     Title={blog.title}
-                                    Thumbnail={`https://mysatoshitest.s3.ap-northeast-1.amazonaws.com/${blog.blog_image}`}
+                                    Thumbnail={blog.blog_image?`https://mysatoshitest.s3.ap-northeast-1.amazonaws.com/${blog.blog_image}`:"https://via.placeholder.com/1400x500"}
                                     LinkID={blog.ID}
                                     date={blog.CreatedAt}
                                 />
