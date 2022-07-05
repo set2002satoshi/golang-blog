@@ -1,0 +1,70 @@
+
+
+
+
+#home {
+    background-color: #F1F5F9;
+  }
+  
+  .navStyle {
+    width: 90%;
+    margin: 0 auto;
+    background-color: #fff;
+  }
+  .header {
+    width: 100%;
+    margin: 0 auto;
+    background-color: #fff;
+    box-shadow: 0px 4px 4px rgba(150, 150, 150, 0.6);
+  }
+  
+  .main {
+    background-color: rgb(0, 0, 0);
+    
+  }
+  
+  .content {
+    width: 75%;
+    height: auto;
+    /* border: 1px solid #000; */
+    margin: 100px auto;
+  }
+  
+  .contentColumn {
+    width: 100%;
+    margin: 0 auto 0px auto;
+    word-break: break-word;
+    width: 75%;
+    height: 600px;
+  }
+  
+  .contentColumn > div {
+    margin-bottom: 100px;
+  }
+  
+  
+  .loadContent {
+    margin: 100px auto;
+  }
+  
+  .loadContent > div > span {
+    width: 100px;
+    height: 100px;
+  }
+  
+
+
+  
+
+
+
+
+
+.mainImg{
+    width: 100%;
+}
+
+.mainImg > img {
+    width: 100%;
+    height: 350px;
+}
