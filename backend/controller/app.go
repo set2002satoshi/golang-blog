@@ -81,7 +81,7 @@ func GetMyBlogsAdditionallyMyCustomer(c *gin.Context) {
 	response := map[string]interface{}{
 		"message": "ok",
 		"Customer": CI.Customer,
-		"data": CI.Blogs,
+		"Blogs": CI.Blogs,
 	}
 	c.JSON(200, response)	
 }

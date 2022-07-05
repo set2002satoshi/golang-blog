@@ -37,7 +37,10 @@ func BlogOne(c *gin.Context) {
 		c.JSON(400, response)
 		return
 	}
-	c.JSON(200, &b)	
+	response := map[string]interface{}{
+		"blog": b,
+	}
+	c.JSON(200, response)	
 }
 
 func BlogOneDelete(c *gin.Context) {

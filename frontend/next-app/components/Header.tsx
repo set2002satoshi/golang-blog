@@ -1,5 +1,5 @@
 import styles from "./header.module.css";
-
+import Link from "next/link";
 
 
 
@@ -27,8 +27,12 @@ const Header = () => {
                 </div>
                 <div className={styles.b1_2}>
                     <div>ID:</div>
-                    <div>MyProfile</div>
-                    <div>login</div>
+                    <Link href="/myprofile">
+                        <div>MyProfile</div>
+                    </Link>
+                    <Link href="/login">
+                        <div>login</div>
+                    </Link>
                     <div>singup</div>
                 </div>
             </header>
