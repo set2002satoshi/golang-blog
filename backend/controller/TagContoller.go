@@ -34,7 +34,7 @@ func TagAllDelete(c *gin.Context) {
 func AddTag(c *gin.Context) {
 	DbEngine := db.ConnectDB()
 
-	TagTable := model.Tag{}
+	TagTable := []model.Tag{}
 	err := c.Bind(&TagTable)
 	if err != nil {
 		response := map[string]interface{}{

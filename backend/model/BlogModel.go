@@ -17,8 +17,8 @@ type Blog struct {
 
 type BlogForm struct {
 	// BlogImage  string `form:"blog_image" gorm:"size:256"`
-	Title    string `form:"title" gorm:"size:25;not null"`
-	Subtitle string `form:"subtitle" gorm:"size:100;not null"`
-	Content  string `form:"content"  gorm:"size:265;not null"`
-	Tag      int    `form:"tag"`
+	Title    string `form:"title" json:"title"  gorm:"size:25;not null"`
+	Subtitle string `form:"subtitle" json:"subtitle" gorm:"size:100;not null"`
+	Content  string `form:"content" json:"content"  gorm:"size:265;not null"`
+	Tag      int    `form:"tag" json:"tag"`
 }

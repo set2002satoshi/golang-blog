@@ -31,25 +31,23 @@ const Login: NextPage = () => {
                     'Access-Control-Allow-Origin': 'http://localhost:8000'
                 },
                 body: JSON.stringify(data),
-            })
-            .then(resp => resp.json())
+            }).then(resp => resp.json())
             .then(resp => {
-                console.log(resp)
-                setCookie(null,"ClientKey", resp.ClientKey, {
-                    maxAge: 30 * 60 * 24 * 60,
-                    path: "/",
-                })
-                if (resp.status === 200) {
-                    return null
+                console.log(resp.status);
+                console.log(resp.ok);
+                if (resp.status) {
+                    setCookie(null,"ClientKey", resp.ClientKey, {
+                        maxAge: 30 * 60 * 24 * 60,
+                        path: "/",
+                    })
+                    router.push('/home')
+                    setRedirect(true)
                 }
+                console.log(resp)
             })
-            await router.replace('/home')
         } catch (e) {
-            alert("パスワードがちげぇーよばーか　ミスるならloginするなよ")
+            alert("パスワードがちげぇーよばーか ミスるならloginするなよ")
         }
-        
-    
-    
     }
     return (
         <div>
@@ -60,7 +58,6 @@ const Login: NextPage = () => {
                 Password={password}
                 EventsTrigger={submit}
             />
-            <h1></h1>
         </div>
     )
 
