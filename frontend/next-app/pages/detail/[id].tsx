@@ -18,7 +18,7 @@ const Detail: NextPage = () => {
         const response = await fetch(url, {
             method: 'GET',
             headers: {
-                "ClientKey": ClientValue, 
+                "ClientKey": ClientValue,
             },
         })
         return response.json()
