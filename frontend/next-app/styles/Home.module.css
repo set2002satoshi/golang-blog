@@ -39,9 +39,14 @@
 }
 
 .contentColumn > div {
-  margin-bottom: 100px;
+  margin: 0 10px;  
 }
 
+
+.contentColumn > div {
+  margin-bottom: 100px;
+
+}
 
 .loadContent {
   margin: 100px auto;
