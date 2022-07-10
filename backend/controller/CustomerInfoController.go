@@ -3,7 +3,6 @@ package controller
 import (
 	"fmt"
 
-	"net/http"
 	"os"
 	"strconv"
 	"time"
@@ -158,10 +157,12 @@ func Login(c *gin.Context) {
 	}
 
 	response := map[string]string{
+		"status": "ok",
 		"message":   "success login",
 		"ClientKey": token,
+		
 	}
-	c.JSON(http.StatusOK, response)
+	c.JSON(201, response)
 }
 
 func CustomerInfoAllDelete(c *gin.Context) {

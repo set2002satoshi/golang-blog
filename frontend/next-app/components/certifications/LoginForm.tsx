@@ -36,6 +36,7 @@ const LoginForm = (props: Props) => {
                         <label htmlFor="exampleInputPassword1" className="form-label">Password</label>
                         <input type="password" className="form-control" id="exampleInputPassword1" value={props.Password} onChange={e => props.setPassword(e.target.value)} />
                     </div>
+                    {/* <button className="btn btn-primary" onClick={props.EventsTrigger}>Login</button> */}
                     <input type="button" value="Login" className="btn btn-primary" onClick={props.EventsTrigger}/>
                 </form>
             </div>
