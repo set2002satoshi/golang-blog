@@ -7,21 +7,21 @@ import LoadingMotion from '../components/LoadMotion/LoadMotion'
 import styles from '../styles/myprofile.module.css';
 import { parseCookies } from 'nookies'
 import { style } from '@mui/system';
-
+import { useRouter } from 'next/router'
 
 const url = "http://localhost:8000/api/main/my-profile"
+const ClientValue = parseCookies().ClientKey
+
 
 const myprofile: NextPage = () => {
-    
+    const router = useRouter()
     // async function MyProfile(url: string): Promise<Boolean | null> {
     //     const response = await fetch(url)
     //     return response.json()
     // }
 
-    // const { data, error } = useSWR(url, MyProfile)
 
-
-    const ClientValue = parseCookies().ClientKey
+    let url = "http://localhost:8000/api/main/my-profile"
     async function example(url: string): Promise<boolean | null> {
         const response = await fetch(url, {
             method: 'GET',
@@ -35,10 +35,7 @@ const myprofile: NextPage = () => {
     
     // const Customer = data.Customer
 
-
-
-
-    if (data === undefined) {
+    if (!data) {
         return (
             <div id={styles.home}>
                 <div className={styles.header}>
@@ -56,6 +53,13 @@ const myprofile: NextPage = () => {
             </div>
         )
     }
+
+
+    if (data.message === "Unauthorized") {
+        router.push("/login")
+    }
+
+
 
     if (error) {
         return (
@@ -79,55 +83,63 @@ const myprofile: NextPage = () => {
         )
     }
 
-
-    const blogs = data.Blogs;
-    const Customer = data.Customer;
-
-    return (
-        <div id={styles.home}>
-            
-            <div className={styles.header}>
-                <div className={styles.navStyle}>
-                <Header />
+    if (data.Blogs) {
+        const blogs = data.Blogs;
+        const Customer = data.Customer;
+        
+        return (
+            <div id={styles.home}>
+                
+                <div className={styles.header}>
+                    <div className={styles.navStyle}>
+                    <Header userName={""}/>
+                    </div>
                 </div>
-            </div>
-            <div className={styles.navStyle}>
-                    <div className={styles.profile}>
-                        <div className={styles.contents}>
-                            <div className={styles.myImg}>
-                                <img src="https://via.placeholder.com/1400x500" width="100" height="100"/>
-                            </div>
-                            <div className={styles.NameAdditionallyMessage}>
-                                <h2>{Customer.name}</h2>
-                                <p>message:</p>
-                                <p>{Customer.message}</p>
-                            </div>
-                            <div className={styles.EditButton}>
-                                <button>Profile Edit</button>
+                <div className={styles.navStyle}>
+                        <div className={styles.profile}>
+                            <div className={styles.contents}>
+                                <div className={styles.myImg}>
+                                    <img src="https://via.placeholder.com/1400x500" width="100" height="100"/>
+                                </div>
+                                <div className={styles.NameAdditionallyMessage}>
+                                    <h2>{Customer.name}</h2>
+                                    <p>message:</p>
+                                    <p>{Customer.message}</p>
+                                </div>
+                                <div className={styles.EditButton}>
+                                    <button>Profile Edit</button>
+                                </div>
                             </div>
                         </div>
                     </div>
+                <br />
+                <div className={styles.content}>
+                    <div className={styles.contentColumn}>
+                        {blogs.map((blog) => (
+                            <div>
+                                <PostCard 
+                                    UserName={blog.UserName}
+                                    UserThumbnail={"https://via.placeholder.com/1400x500"}
+                                    Title={blog.title}
+                                    Thumbnail={blog.blog_image?`https://mysatoshitest.s3.ap-northeast-1.amazonaws.com/${blog.blog_image}`:"https://via.placeholder.com/1400x500"}
+                                    LinkID={blog.ID}
+                                    date={blog.CreatedAt}
+                                />
+                            </div>
+                        ))}
+                    </div>
                 </div>
-            <br />
-            <div className={styles.content}>
-                <div className={styles.contentColumn}>
-                    {blogs.map((blog) => (
-                        <div>
-                            <PostCard 
-                                UserName={blog.UserName}
-                                UserThumbnail={"https://via.placeholder.com/1400x500"}
-                                Title={blog.title}
-                                Thumbnail={blog.blog_image?`https://mysatoshitest.s3.ap-northeast-1.amazonaws.com/${blog.blog_image}`:"https://via.placeholder.com/1400x500"}
-                                LinkID={blog.ID}
-                                date={blog.CreatedAt}
-                            />
-                        </div>
-                    ))}
-                </div>
+                
             </div>
-            
-        </div>
+        )
+
+    }
+
+    return (
+        <>
+        </>
     )
+
 }
 
 export default myprofile;

@@ -1,4 +1,4 @@
-import React,{ useState } from 'react'
+import React,{ useEffect ,useState } from 'react'
 import type { NextPage } from "next"
 import Header from "../components/Header"
 import styles from "../styles/blogForm.module.css"
@@ -25,10 +25,39 @@ const blogForm: NextPage = () => {
     const [tag, setTag] = useState<number>(1)
     const [File, setFile] = useState<React.SetStateAction<FileList> | undefined>()
     const ClientValue = parseCookies().ClientKey
+
+    const url = "http://localhost:8000/api/check"
+  
+    async function check(): Promise<boolean | null> {
+        const resp = await fetch(url, {
+            method: "GET",
+            headers: {
+                "ClientKey": ClientValue, 
+            },
+        })
+        return resp.json()
+    }
+
+    const { data, error } = useSWR(url, check);
     
+    console.log(data)
+
+    if (!data) {
+        return (
+            <>
+                <LoadingMotion />
+            </>
+        )
+    }
+
+    console.log(data)
+
+    if (!data.status) {
+        router.replace("/login")
+        return
+    }
     
     const submit = async (): Promise<void> => {
-
         try {
             setLoading(true)
             const PushFormData = new FormData();
@@ -38,7 +67,7 @@ const blogForm: NextPage = () => {
             PushFormData.append("tag", tag)
             PushFormData.append("file", File ? File: "")
             console.log(PushFormData);
-            await fetch(url, {
+            await fetch("http://localhost:8000/api/app/blog_push", {
                 method: "POST",
                 headers: {
                     // "Content-Type": "multipart/form-data; boundary=------some-random-characters",
@@ -110,7 +139,7 @@ const blogForm: NextPage = () => {
         <div id={styles.home}>
         <div className={styles.header}>
             <div className={styles.navStyle}>
-            <Header />
+            <Header userName={data.userName} certification={data.status} />
             </div>
         </div>
         <div className={styles.content}>

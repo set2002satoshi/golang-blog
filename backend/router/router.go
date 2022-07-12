@@ -62,8 +62,12 @@ func SetUpRouter() {
 	}
 	v5 := router.Group("api/main")
 	{
-		v5.GET("/home")
+		v5.GET("/home", controller.GetBlogsAll)
 		v5.GET("/my-profile", controller.GetMyBlogsAdditionallyMyCustomer)
+	}
+	v6 := router.Group("api/")
+	{
+		v6.GET("/check", controller.UserCheckAdditionallyGetCustomer)
 	}
 	
 

@@ -5,6 +5,8 @@ import { useRouter } from 'next/router'
 import { setCookie } from 'nookies'
 import LoginForm from '../components/certifications/LoginForm'
 import { NextPageContext } from 'next';
+import Header from "../components/Header"
+import styles from '../styles/Home.module.css';
 
 const url = "http://localhost:8000/api/certification"
 
@@ -40,7 +42,8 @@ const Login: NextPage = () => {
                         maxAge: 30 * 60 * 24 * 60,
                         path: "/",
                     })
-                    router.push('/home')
+                    // router.push('/home')
+                    router.replace('/home')
                     setRedirect(true)
                 }
                 console.log(resp)
@@ -51,6 +54,11 @@ const Login: NextPage = () => {
     }
     return (
         <div>
+            <div className={styles.header}>
+                <div className={styles.navStyle}>
+                <Header userName={""} certification={false} />
+                </div>
+            </div>
             <LoginForm
                 setEmail={setEmail} 
                 Email={email} 
