@@ -1,11 +1,11 @@
 package controller
 
 import (
-	// "fmt"
+
 	// "log"
+	"net/http"
 	"strconv"
 
-	// "net//http"
 	// "github.com/aws/aws-lambda-go/lambda/messages"
 	"github.com/gin-gonic/gin"
 	// "gorm.io/gorm"
@@ -16,14 +16,60 @@ import (
 )
 
 
+
 func GetBlogsAll(c *gin.Context) {
 	DbEngine := db.ConnectDB()
+	var u bool
+	var user string
+	if Num, err := service.CheckUser(c); err != nil {
+		u = false
+		user = "not user"
+	}else {
+		var userInfo model.CustomerInfo
+		userID, _ := strconv.Atoi(Num)
+		DbEngine.Where("id = ?", userID).Preload("Customer").First(&userInfo)
+		user = userInfo.Customer.Name
+		u = true
+	}
 	b := []model.Blog{}
 	DbEngine.Preload("Tags").Find(&b)
-	c.JSON(200, gin.H{
-		"user": b,
+	c.JSON(http.StatusOK, gin.H{
+		"blogs": b,
+		"username": user,
+		"certification": u,
+		"status": "ok",
+	})
+	return
+}
+
+func UserCheckAdditionallyGetCustomer(c *gin.Context) {
+	DbEngine := db.ConnectDB()
+	var userInfo model.CustomerInfo
+	Num, err := service.CheckUser(c)
+	if err != nil {
+		
+		c.JSON(http.StatusOK, gin.H{"status": false})
+		return
+	}
+	userID, _ := strconv.Atoi(Num)
+	DbEngine.Where("id = ?", userID).Preload("Customer").First(&userInfo)
+	c.JSON(http.StatusOK, gin.H{
+		"status": true,
+		"userName": userInfo.Customer.Name,
 	})
 }
+
+
+
+// func GetBlogsAll(c *gin.Context) {
+
+// 	DbEngine := db.ConnectDB()
+// 	b := []model.Blog{}
+// 	DbEngine.Preload("Tags").Find(&b)
+// 	c.JSON(200, gin.H{
+// 		"user": b,
+// 	})
+// }
 
 
 
